@@ -1,0 +1,26 @@
+from django.contrib import admin, messages
+from . import models
+# Register your models here.
+
+class DatasetAdmin(admin.ModelAdmin):
+    list_display = ('name','type','private','ready_to_use')
+    actions = ("uppercase",)  # Necessary
+    @admin.action(description='Make selected name uppercase')
+    def uppercase(modeladmin, request, queryset):
+        for obj in queryset:
+            obj.name = obj.name.upper()
+            obj.save()
+            messages.success(request, "Successfully made uppercase!")
+
+class PipeJobAdmin(admin.ModelAdmin):
+    list_display = ('aimodel','metric','status')
+
+admin.site.register(models.Paper)
+admin.site.register(models.Dataset, DatasetAdmin)
+admin.site.register(models.AiModel)
+admin.site.register(models.Preprocess)
+admin.site.register(models.CrossValidation)
+admin.site.register(models.Scaler)
+admin.site.register(models.Metric)
+admin.site.register(models.PipeJob, PipeJobAdmin)
+
