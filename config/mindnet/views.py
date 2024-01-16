@@ -1,21 +1,20 @@
 import time, requests, zipfile, mne, glob, scipy, io, urllib, base64
 from django.shortcuts import render, get_object_or_404
 from django_q.tasks import async_task
-from django.core.files.storage import FileSystemStorage
-from django.core.files.base import File
 from sklearn.model_selection import cross_validate, KFold, GroupKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from xgboost.sklearn import XGBClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from django.http import HttpResponse
+from django.conf import  settings
 from datetime import datetime
 from joblib import dump
 import numpy as np
 from . import models
 
 def test(request):
-    return HttpResponse('Test OK!')
+    return HttpResponse('Test OK!' + str(settings.BASE_DIR))
 
 # Dataset Processor View
 def dataset_processor(model):
@@ -33,6 +32,10 @@ def dataset_processor(model):
     path = 'media/datasets/' + datetime.now().strftime('%Y/%m/%d/%H%M%S/') + name
     with zipfile.ZipFile(source, 'r') as zip_ref:
         zip_ref.extractall(path)
+    data_path = glob.glob(path + '/*')[0]
+    raw = mne.io.read_raw_gdf(data_path, verbose=False)
+    ch_names = ','.join(i for i in raw.ch_names)
+    model.channels     = ch_names
     model.dataset_path = path
     model.ready_to_use = True
     model.save()
@@ -77,7 +80,7 @@ def pipjob_processing(model):
     trained_model = model.trained_model
 
     def read_raw_data(subject, path, eog, event_id, filter, freq, montage_type, timing, on_missing):
-        raw = mne.io.read_raw_gdf(path, eog=eog, preload=True)
+        raw = mne.io.read_raw_gdf(path, eog=eog, preload=True, verbose=False)
         '''if montage_type is not 'None':
             montage = mne.channels.make_standard_montage(montage_type)
             raw.set_montage(montage)'''
@@ -151,6 +154,7 @@ def pipjob_processing(model):
     elif cv.name == 'GroupKFold':
         hyperparameter = hyperparameter_get(cv.hyperparameters)
         cv = GroupKFold(n_splits=int(hyperparameter['n_splits']))
+        group_array = None
     else:
         pass
     if metric.name == 'All':
@@ -165,12 +169,15 @@ def pipjob_processing(model):
         scoring = ['f1', ]
     else:
         pass
-    score = cross_validate(pipe, data_array, label_array, cv=cv, scoring=scoring, n_jobs=1, return_estimator=True)
+    score = cross_validate(pipe, data_array, label_array,
+                           cv=cv,scoring=scoring, n_jobs=1,
+                           return_estimator=True, groups=group_array)
     estimators = score.pop('estimator')
-    print(estimators[0][1])
-    dump(estimators[0][1], 'x.joblib')
-    #FileSystemStorage("models_trained/", trained_model)
-    #model.trained_model(content=File(trained_model))
+    path_save = '/models_trained/'+datetime.now().strftime('%Y%m%d%H%M%S')+'_'+str(model.user.username) + '.joblib'
+    dump(estimators[0][1], filename=str(settings.BASE_DIR)+'/media'+path_save)
+    #from os.path import basename
+    #from django.core.files import File
+    model.trained_model = path_save
     model.results = score
     model.status  = True
     model.save()

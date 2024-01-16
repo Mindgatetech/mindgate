@@ -27,8 +27,8 @@ class Dataset(models.Model):
     type            = models.CharField(choices=TYPE_CHOICE, default='EEG', max_length=10)
     FIELD_CHOICE    = [('MI','Motor Imagery'), ('ERP','ERP')]
     research_field  = models.CharField(choices=FIELD_CHOICE, default='MI', max_length=20)
-    eeg_channels    = models.CharField(max_length=256, blank=True, null=True)
-    eog_channels    = models.CharField(max_length=256, blank=True, null=True)
+    channels        = models.CharField(max_length=256, blank=True, null=True)
+    #eog_channels    = models.CharField(max_length=256, blank=True, null=True)
     dataset_link    = models.URLField(blank=False, null=True, max_length=500)
     dataset_path    = models.CharField(max_length=256, blank=True, null=True)
     related_paper   = models.ManyToManyField('Paper', blank=True, default=None)
@@ -48,14 +48,14 @@ def dataset_processing(sender, instance, created, **kwargs):
         }
         async_task(views.dataset_processor, model, q_options=opts)
 
-@receiver(post_delete, sender=Dataset)
+'''@receiver(post_delete, sender=Dataset)
 def dataset_delete(sender, instance,  **kwargs):
     path = instance.dataset_path
     path = path.split('/')
     path = '/'.join(path[:-1])
     shutil.rmtree(path)
 
-
+'''
 # Ai Model
 class AiModel(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_aimodel')

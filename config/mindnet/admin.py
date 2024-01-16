@@ -13,7 +13,7 @@ class DatasetAdmin(admin.ModelAdmin):
             messages.success(request, "Successfully made uppercase!")
 
 class PipeJobAdmin(admin.ModelAdmin):
-    list_display = ('aimodel','metric','status')
+    list_display = ('aimodel','evaluation_type','metric','status')
 
 admin.site.register(models.Paper)
 admin.site.register(models.Dataset, DatasetAdmin)

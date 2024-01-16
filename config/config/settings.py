@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django_q',
     'cpanel',
     'mindnet',
+    'smartnet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
