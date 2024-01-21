@@ -1,4 +1,4 @@
-import time, requests, zipfile, mne, glob, scipy, io, urllib, base64
+import time, requests, zipfile, mne, glob, scipy, io, urllib, base64, hashlib
 from django.shortcuts import render, get_object_or_404
 from django_q.tasks import async_task
 from sklearn.model_selection import cross_validate, KFold, GroupKFold
@@ -11,14 +11,18 @@ from django.conf import  settings
 from datetime import datetime
 from joblib import dump
 import numpy as np
+import importlib
 from . import models
 
+
 def test(request):
+    models.Dataset.object
     return HttpResponse('Test OK!' + str(settings.BASE_DIR))
 
 # Dataset Processor View
 def dataset_processor(model):
     name    = model.name
+    username= model.user.username
     url     = model.dataset_link
 
     path    ='./media/datasets_archived/'
@@ -29,14 +33,33 @@ def dataset_processor(model):
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
         finish_time = time.time()
-    path = 'media/datasets/' + datetime.now().strftime('%Y/%m/%d/%H%M%S/') + name
-    with zipfile.ZipFile(source, 'r') as zip_ref:
-        zip_ref.extractall(path)
-    data_path = glob.glob(path + '/*')[0]
+    '''    path = 'media/datasets/' + datetime.now().strftime('%Y/%m/%d/%H%M%S/') + name
+        with zipfile.ZipFile(source, 'r') as zip_ref:
+            zip_ref.extractall(path)'''
+    def renamefile(originalname, username):
+      fn = originalname.split('.')
+      name = ''.join(f for f in fn[:-1])
+      extention = fn[-1]
+      rename = username+'_'+name+'_'+datetime.now().strftime('%Y_%m_%d_%H_%M_%S.')+extention
+      return rename
+    zipdata = zipfile.ZipFile(source)
+    zipinfos = zipdata.infolist()
+    # iterate through each file
+    extracted_file_path = list()
+    for zipinfo in zipinfos:
+        # This will do the renaming
+        zipinfo.filename = renamefile(zipinfo.filename, username=username)
+        extracted_file_path.append('media/datasets/'+zipinfo.filename)
+        #zipdata.extract(zipinfo)
+        zipdata.extract(zipinfo, 'media/datasets/')
+    data_path = extracted_file_path[0]
     raw = mne.io.read_raw_gdf(data_path, verbose=False)
     ch_names = ','.join(i for i in raw.ch_names)
+    model.extracted_file_path = ','.join(efp for efp in extracted_file_path)
     model.channels     = ch_names
     model.dataset_path = path
+    model.metadata = hashlib.shake_256(ch_names.encode()).hexdigest(8)
+    print(model.metadata)
     model.ready_to_use = True
     model.save()
 
@@ -50,7 +73,7 @@ def hyperparameter_get(arg):
 
 # PipeJob Processor View
 def pipjob_processing(model):
-    dataset_path    = model.dataset.dataset_path
+    efp             = model.dataset.extracted_file_path
     cv              = model.crossvalidation
     preprocess      = model.preprocess
     aimodel         = model.aimodel
@@ -105,11 +128,11 @@ def pipjob_processing(model):
         group = [subject] * epochs_data.shape[0]
         return epochs_data, labels, group
 
-    data_path = glob.glob(dataset_path + '/*')
-    if len(dataset_path) > 0:
+    data_path = [fp for fp in efp.split(',')]
+    '''if len(dataset_path) > 0:
         extention = dataset_path[0].split('.')[-1]
         print(extention)
-        path = glob.glob(dataset_path + "/*." + extention)
+        path = glob.glob(dataset_path + "/*." + extention)'''
         ######################
     data = [read_raw_data(
         subject=subject, path=path, eog=eog_channels, event_id=event_id,
@@ -133,15 +156,22 @@ def pipjob_processing(model):
     elif scaler.name == 'StandardScler':
         scaler = StandardScaler()
         steps.append(('scaler', scaler))
-    if aimodel.framework == 'Scikit-learn':
-        if aimodel.name == 'XGboost':
-            xgb = XGBClassifier()
-            steps.append(('XGB',xgb))
-        if aimodel.name == 'LDA':
-            lda = LDA()
-            steps.append(('LDA', lda))
-    elif aimodel.framework == 'Keras':
-        pass
+    else:
+        if scaler.granted:
+            function_string = "media.Scalers."+ str(scaler.scaler.url.split('/')[-1].split('.')[0]) + ".my_scaler"
+            mod_name, func_name = function_string.rsplit('.', 1)
+            mod = importlib.import_module(mod_name)
+            func = getattr(mod, func_name)
+            steps.append(func())
+    if aimodel.granted:
+        if aimodel.framework == 'Scikit-learn':
+            function_string = "media.Ai_models."+ str(aimodel.model.url.split('/')[-1].split('.')[0]) + ".my_model"
+            mod_name, func_name = function_string.rsplit('.', 1)
+            mod = importlib.import_module(mod_name)
+            func = getattr(mod, func_name)
+            steps.append(func())
+        elif aimodel.framework == 'Keras':
+            pass
     else:
         pass
     #### Pipeline Start ####
@@ -168,12 +198,17 @@ def pipjob_processing(model):
     elif metric.name == 'F1':
         scoring = ['f1', ]
     else:
-        pass
+        if metric.granted:
+            function_string = "media.Metrics." + str(metric.metric.url.split('/')[-1].split('.')[0]) + ".my_metric"
+            mod_name, func_name = function_string.rsplit('.', 1)
+            mod = importlib.import_module(mod_name)
+            func = getattr(mod, func_name)
+            scoring = func()
     score = cross_validate(pipe, data_array, label_array,
                            cv=cv,scoring=scoring, n_jobs=1,
                            return_estimator=True, groups=group_array)
     estimators = score.pop('estimator')
-    path_save = '/models_trained/'+datetime.now().strftime('%Y%m%d%H%M%S')+'_'+str(model.user.username) + '.joblib'
+    path_save = '/models_trained/'+str(model.user.username)+datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.joblib'
     dump(estimators[0][1], filename=str(settings.BASE_DIR)+'/media'+path_save)
     #from os.path import basename
     #from django.core.files import File

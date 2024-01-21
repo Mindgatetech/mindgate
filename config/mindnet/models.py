@@ -1,4 +1,4 @@
-import shutil, datetime
+import shutil, datetime, os
 from . import views
 from django.db import models
 from django.dispatch import receiver
@@ -33,6 +33,7 @@ class Dataset(models.Model):
     dataset_path    = models.CharField(max_length=256, blank=True, null=True)
     related_paper   = models.ManyToManyField('Paper', blank=True, default=None)
     #related_models  = models.ManyToManyField('AiModel', blank=True, default=None)
+    extracted_file_path = models.TextField(default=None, null=True, blank=True)
     metadata        = models.TextField(null=True, blank=True)
     private         = models.BooleanField(default=False)
     ready_to_use    = models.BooleanField(default=False)
@@ -48,14 +49,13 @@ def dataset_processing(sender, instance, created, **kwargs):
         }
         async_task(views.dataset_processor, model, q_options=opts)
 
-'''@receiver(post_delete, sender=Dataset)
+@receiver(post_delete, sender=Dataset)
 def dataset_delete(sender, instance,  **kwargs):
-    path = instance.dataset_path
-    path = path.split('/')
-    path = '/'.join(path[:-1])
-    shutil.rmtree(path)
+    efp = instance.extracted_file_path
+    data_path = [fp for fp in efp.split(',')]
+    for fp in data_path:
+        os.remove(fp)
 
-'''
 # Ai Model
 class AiModel(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_aimodel')
@@ -70,6 +70,7 @@ class AiModel(models.Model):
     hyperparameters = models.TextField(null=True, blank=True)
     related_paper   = models.ManyToManyField('Paper',blank=True)
     related_dataset = models.ManyToManyField('Dataset', blank=True)
+    granted         = models.BooleanField(default=False)
     private         = models.BooleanField(default=False)
 
     def __str__(self):
@@ -93,9 +94,10 @@ class Scaler(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_scaler')
     name            = models.CharField(max_length=25,)
     description     = models.TextField(default=None, blank=True)
-    scaler_code     = models.TextField(null=True, blank=True)
+    scaler          = models.FileField(upload_to='Scalers/', null=True, blank=True)
     hyperparameters = models.TextField(null=True, blank=True)
     related_paper   = models.ManyToManyField('Paper',blank=True)
+    granted         = models.BooleanField(default=False)
     private         = models.BooleanField(default=False)
 
     def __str__(self):
@@ -118,9 +120,10 @@ class Metric(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_metric')
     name            = models.CharField(max_length=25,)
     description     = models.TextField(default=None, blank=True)
-    metric_code     = models.TextField(null=True, blank=True)
+    metric          = models.FileField(upload_to='Metrics/', null=True, blank=True)
     #hyperparameters = models.TextField(null=True, blank=True)
     related_paper   = models.ManyToManyField('Paper',blank=True)
+    granted         = models.BooleanField(default=False)
     private         = models.BooleanField(default=False)
 
     def __str__(self):
