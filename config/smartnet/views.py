@@ -64,10 +64,10 @@ def hook_test(request):
         print(type(results))
         results = results.replace("'", "\"")
         results = json.loads(results)
-
-        #print(results)
+        print(type(results))
+        print(results.keys())
         #return HttpResponse("OK")
-
+        processed_results = dict()
         for data_key in results.keys():
             print(data_key)
             ATable = PrettyTable(["Pipe", "S0", "S1", "S2", "S3", "S4", "Average"])
@@ -115,22 +115,17 @@ def hook_test(request):
                             re = re.tolist()
                             re.insert(0, s)
                             FTable.add_row(re)
-        results = dict()
-        results = dict(Accuracy=ATable.get_csv_string(),Precision=PTable.get_csv_string(),
+        #results = dict()
+        processed_results = dict(Accuracy=ATable.get_csv_string(),Precision=PTable.get_csv_string(),
                    Recall=RTable.get_csv_string(), F1=FTable.get_csv_string())
         result_id = hashlib.shake_256(str(datetime.datetime.now()).encode()).hexdigest(5)
         '''for result_key in results.keys():
             save_path = 'media/Smartnet_results/'+data_key+'_'+result_key+'.csv'
             pd.DataFrame([x.replace('\r', '').split(',') for x in results[result_key].split("\n")[1:-1]],
                          columns=[x.replace('\r', '').split(',') for x in results[result_key].split("\n")][0])'''
-        models.Result.objects.create(related_result=obj, result_id=result_id, results=results, processed=True)
+        #models.Result.objects.create(related_result=obj, result_id=result_id, results=processed_results, processed=True)
     return HttpResponse("OK OK")
-def hyperparameter_get(arg):
-    hyperparameter = dict()
-    for _, item in enumerate(arg.split(",")):
-      tmp = item.split(":")
-      hyperparameter[tmp[0]] = tmp[1]
-    return hyperparameter
+
 def Scheduled_test(request):
 
     value_list = mnm.Dataset.objects.filter(private=False).values_list(
@@ -162,7 +157,15 @@ def Scheduled_test(request):
         group_by_value[value] = mnm.AiModel.objects.filter(private=False, framework=value)
     print(group_by_value)
     return HttpResponse("OK!")
-def Scheduled():
+
+
+def hyperparameter_get(arg):
+    hyperparameter = dict()
+    for _, item in enumerate(arg.split(",")):
+      tmp = item.split(":")
+      hyperparameter[tmp[0]] = tmp[1]
+    return hyperparameter
+def smartnet():
     print("Hello I'm Scheduled function")
     def read_raw_data(subject, path, eog, event_id, filter, freq, montage_type, timing, on_missing):
         raw = mne.io.read_raw_gdf(path, eog=eog, preload=True, verbose=False)
@@ -293,8 +296,12 @@ def Scheduled():
                                     'recall',
                                     'f1'
                                    ]
+                        if len(np.unique(group_array)) < 2:
+                            cv = KFold()
+                        else:
+                            cv = LeaveOneGroupOut()
                         score = cross_validate(pipe, data_array, label_array,
-                                               cv=LeaveOneGroupOut(), scoring=scoring, n_jobs=1,
+                                               cv=cv, scoring=scoring, n_jobs=1,
                                                return_estimator=True, groups=group_array)
                         score.pop('score_time')
                         score.pop('fit_time')
@@ -317,13 +324,5 @@ def Scheduled():
     best_models_path = ','.join(bmp for bmp in best_models_path)
     models.Result.objects.create(result_id=result_id, results=str(results), best_models_path=best_models_path)
     return True
-def Scheduled_hook(score_list):
+def smartnet_hook(score_list):
     print("Hello I'm Scheduled Hook function")
-
-def S():
-    t = 'datetime.datetime.now()'
-    print('Hi from SC function :', t)
-
-def SCHook(t):
-    print('Hi from SCHook function :', t)
-
