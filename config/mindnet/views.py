@@ -1,13 +1,13 @@
 import time, requests, zipfile, mne, glob, scipy, io, urllib, base64, hashlib
 from django.shortcuts import render, get_object_or_404
 from django_q.tasks import async_task
-from sklearn.model_selection import cross_validate, KFold, GroupKFold
+from sklearn.model_selection import cross_validate, KFold, GroupKFold, LeaveOneGroupOut
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from xgboost.sklearn import XGBClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from django.http import HttpResponse
-from django.conf import  settings
+from django.conf import settings
 from datetime import datetime
 from joblib import dump
 import numpy as np
