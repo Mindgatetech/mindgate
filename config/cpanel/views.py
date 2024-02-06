@@ -116,7 +116,7 @@ def paper_delete(request, id):
     Paper.objects.filter(user=user, pk=id).delete()
     return redirect('/cpanel/papers/mine')
 
-#Dataset views
+# Dataset views
 
 @login_required
 def datasets(request, opt):
@@ -132,8 +132,35 @@ def datasets(request, opt):
 
 @login_required
 def dataset_details(request, id):
-    
-@login_required()
+    user = request.user
+    if request.method == 'POST':
+        if Dataset.objects.filter(user=user, pk=id).exists():     
+            dataset = Dataset.objects.get(user=user, pk=id)
+            dataset.name = request.POST.get('name')
+            dataset.description = request.POST.get('description')
+            dataset.type = request.POST.get('type')
+            related_paper_id = request.POST.get('related_paper_id')
+            if Paper.objects.filter(pk=related_paper_id).exists():
+                paper = Paper.objects.filter(pk=related_paper_id)
+                dataset.related_paper.set(paper)
+            dataset.research_field = request.POST.get('research_field')
+            dataset.channels = request.POST.get('channels')
+            dataset.private = bool(request.POST.get('private', False))
+            dataset.save()
+            # message
+            return redirect('/cpanel/datasets/mine')
+        # message you have not premission
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+    queryset = Dataset.objects.filter(user=user, pk=id) | Dataset.objects.filter(private=False, pk=id)
+    dataset  = get_object_or_404(queryset, pk=id)
+    papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
+    context  = { 'dataset': dataset, 'papers' : papers }
+    return render(request, 'cpanel/dataset/details.html', context=context)
+
+@login_required
 def dataset_add(request):
     user = request.user
     if request.method == 'POST':
@@ -143,10 +170,16 @@ def dataset_add(request):
         research_field  = request.POST.get('research_field')
         channels        = request.POST.get('channels')
         dataset_link    = request.POST.get('dataset_link')
-        related_paper_id= request.POST.get('related_paper_id')
-        related_paper   = Paper.objects.get(pk=related_paper_id)
-        private         = request.POST.get('private')
-        Dataset.objects.create(user, name, description, type, research_field, channels, dataset_link, related_paper, private)
+        related_paper_id= request.POST.get('related_paper_id') 
+        private         = bool(request.POST.get('private', False))
+        dataset = Dataset.objects.create(user=user, name=name, description=description, type=type,
+                                research_field=research_field, channels=channels,
+                                  dataset_link=dataset_link, private=private)
+        if Paper.objects.filter(pk=related_paper_id).exists():
+                paper = Paper.objects.filter(pk=related_paper_id)
+                dataset.related_paper.set(paper)
+                dataset.save()
+        #message 
         return redirect('/cpanel/datasets/mine')
     papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
     context = {
@@ -154,8 +187,7 @@ def dataset_add(request):
     }
     return render(request, 'cpanel/dataset/add.html', context=context)
 
-
-@login_required()
+@login_required
 def dataset_delete(request, id):
     user = request.user
     Dataset.objects.filter(user=user, pk=id).delete()
@@ -164,7 +196,7 @@ def dataset_delete(request, id):
 
 # Ai Model
 
-@login_required()
+@login_required
 def aimodels(request, opt):
     if opt == 'public':
         aimodels = AiModel.objects.filter(private=False)

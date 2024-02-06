@@ -391,19 +391,19 @@
                       <a
                         class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4"
                         href="#"
-                        @click.prevent="selected = (selected === 'Moretools' ? '':'Moretools')"
-                        :class="{ 'bg-graydark dark:bg-meta-4': (selected === 'Moretools') || (page === 'public_aimodels' || page === 'my_aimodels' || page === 'add_aimodel' ) }"
+                        @click.prevent="selected = (selected === 'Moreoptions' ? '':'Moreoptions')"
+                        :class="{ 'bg-graydark dark:bg-meta-4': (selected === 'Moreoptions') || (page === 'public_aimodels' || page === 'my_aimodels' || page === 'add_aimodel' ) }"
                       >
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
                         <path fill-rule="evenodd" d="M21.75 6.75a4.5 4.5 0 0 1-4.884 4.484c-1.076-.091-2.264.071-2.95.904l-7.152 8.684a2.548 2.548 0 1 1-3.586-3.586l8.684-7.152c.833-.686.995-1.874.904-2.95a4.5 4.5 0 0 1 6.336-4.486l-3.276 3.276a3.004 3.004 0 0 0 2.25 2.25l3.276-3.276c.256.565.398 1.192.398 1.852Z" clip-rule="evenodd" />
                       </svg>
           
           
-                        More tools
+                        More Options
           
                         <svg
                           class="absolute right-4 top-1/2 -translate-y-1/2 fill-current"
-                          :class="{ 'rotate-180': (selected === 'Moretools') }"
+                          :class="{ 'rotate-180': (selected === 'Moreoptions') }"
                           width="18"
                           height="18"
                           viewBox="0 0 18 18"
@@ -422,7 +422,7 @@
                       <!-- Dropdown Menu Start -->
                       <div
                         class="overflow-hidden"
-                        :class="(selected === 'Moretools') ? 'block' :'hidden'"
+                        :class="(selected === 'Moreoptions') ? 'block' :'hidden'"
                       >
                         <ul class="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
@@ -540,7 +540,7 @@
 
 
 
-              Jobs
+              Pipe Jobs
 
               <svg
                 class="absolute right-4 top-1/2 -translate-y-1/2 fill-current"

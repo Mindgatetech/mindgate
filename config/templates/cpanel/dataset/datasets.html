@@ -36,10 +36,10 @@
             Description
           </th>
           <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-            Type
+            Private
           </th>
           <th class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-            RF
+            Ready to Use
           </th>
           <th class="py-4 px-4 font-medium text-black dark:text-white">
             Actions
@@ -53,21 +53,30 @@
           <td class="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
             <h5 class="font-medium text-black dark:text-white">{{ dataset.name }}</h5>
             <p class="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">{{ dataset.type }}</p>
+            <p class="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">{{ dataset.research_field }}</p>
           </td>
           <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
             <p class="text-black dark:text-white">{{ dataset.description }}</p>
           </td>
           <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-            <p class="text-black dark:text-white">{{ dataset.channels }}</p>
+            
+            {% if dataset.private %}
+            <p class="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">Yes</p>
+            {% else %}
+            <p class="inline-flex rounded-full bg-danger bg-opacity-10 py-1 px-3 text-sm font-medium text-danger">No</p>
+            {% endif %}
           </td>
           <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-            <p class="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
-              {{ dataset.research_field }}
-            </p>
+            {% if dataset.ready_to_use %}
+            <p class="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">Yes</p>
+            {% else %}
+            <p class="inline-flex rounded-full bg-danger bg-opacity-10 py-1 px-3 text-sm font-medium text-danger">No</p>
+            {% endif %}
           </td>
           <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
             <div class="flex items-center space-x-3.5">
               {% if 'mine' in request.path %}
+              <a href="{% url 'dataset_details' dataset.id %}">
               <button class="hover:text-primary">
                 <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none"
                   xmlns="http://www.w3.org/2000/svg">
@@ -79,6 +88,7 @@
                     fill="" />
                 </svg>
               </button>
+              </a>
               <a href="{% url 'dataset_delete' dataset.id %}">
               <button class="hover:text-primary">
                 <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none"
@@ -110,6 +120,7 @@
                 </svg>
               </button>
               {% else %}
+              <a href="{% url 'dataset_details' dataset.id %}">
               <button class="hover:text-primary">
                 <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none"
                   xmlns="http://www.w3.org/2000/svg">
@@ -121,6 +132,7 @@
                     fill="" />
                 </svg>
               </button>
+              </a>
               <button class="hover:text-primary">
                 <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none"
                   xmlns="http://www.w3.org/2000/svg">

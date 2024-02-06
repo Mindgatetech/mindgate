@@ -12,10 +12,13 @@ urlpatterns = [
     path('papers/<str:opt>', views.papers, name='papers'),
     path('paper/add', views.paper_add, name='paper_add'),
     path('paper/delete/<int:id>', views.paper_delete, name='paper_delete'),
+
     # Dataset
-    path('datasets/<str:opt>', views.datasets, name='datasets'),
+    path('datasets/<str:opt>', views.datasets, name='datasets'),    
+    path('dataset/<int:id>', views.dataset_details, name='dataset_details'),
     path('dataset/add', views.dataset_add, name='dataset_add'),
     path('dataset/delete/<int:id>', views.dataset_delete, name='dataset_delete'),
+    
     # AiModel
     path('aimodels/<str:opt>', views.aimodels, name='aimodels'),
     path('aimodel/add', views.aimodel_add, name='aimodel_add'),

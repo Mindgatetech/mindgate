@@ -32,14 +32,15 @@
                     Add New Dataset
                   </h3>
                 </div>
-                <form action="#">
+                <form action="{% url 'dataset_add' %}" method="POST">
+                  {% csrf_token %}
                   <div class="p-6.5">
                     <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div class="w-full xl:w-1/2">
                         <label class="mb-2.5 block text-black dark:text-white">
                           Dataset name <span class="text-meta-1">*</span>
                         </label>
-                        <input type="text" placeholder="Enter your dataset name" required
+                        <input type="text" placeholder="Enter your dataset name" name="name" required
                           class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
                       </div>
 
@@ -48,7 +49,7 @@
                           Related Paper
                         </label>
                         <div class="relative z-20 bg-transparent dark:bg-form-input">
-                          <select
+                          <select name="related_paper_id"
                             class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                             <option value="None" selected >--</option>
                             {% if papers %}
@@ -70,12 +71,18 @@
                         </div>
                       </div>
                     </div>
-
+                    <div class="mb-6">
+                      <label class="mb-2.5 block text-black dark:text-white">
+                        Description
+                      </label>
+                      <textarea rows="6" placeholder="Type your description" name="description"
+                        class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
+                    </div>
                     <div class="mb-4.5">
                       <label class="mb-2.5 block text-black dark:text-white">
                         Dataset Link <span class="text-meta-1">*</span>
                       </label>
-                      <input type="email" placeholder="Enter the dataset link"
+                      <input type="text" placeholder="Enter the dataset link" name="dataset_link"
                         class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required/>
                     </div>
 
@@ -86,10 +93,10 @@
                         Type <span class="text-meta-1">*</span>
                       </label>
                       <div class="relative z-20 bg-transparent dark:bg-form-input">
-                        <select
+                        <select name="type"
                           class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
-                          <option value="">Type your subject</option>
-                          <option value="">USA</option>
+                          <option value="EEG">EEG</option>
+                          <option value="fMRI">fMRI</option>
                         </select>
                         <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                           <svg class="fill-current" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -108,12 +115,10 @@
                         Research Field <span class="text-meta-1">*</span>
                       </label>
                       <div class="relative z-20 bg-transparent dark:bg-form-input">
-                        <select
+                        <select name="research_field"
                           class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
-                          <option value="">Type your subject</option>
-                          <option value="">USA</option>
-                          <option value="">UK</option>
-                          <option value="">Canada</option>
+                          <option value="MI">Motor Imagery</option>
+                          <option value="ERP">ERP</option>
                         </select>
                         <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                           <svg class="fill-current" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -127,10 +132,18 @@
                         </span>
                       </div>
                     </div>
+                    
+                    <div class="mb-6">
+                      <label class="mb-2.5 block text-black dark:text-white">
+                        Channels
+                      </label>
+                      <textarea rows="6" placeholder="Type your description" name="channels"
+                        class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
+                    </div>
                     <div class="mt-5 mb-5.5 flex items-center justify-between">
                       <label for="formCheckbox" class="flex cursor-pointer">
                         <div class="relative pt-0.5">
-                          <input type="checkbox" id="formCheckbox" class="taskCheckbox sr-only" />
+                          <input type="checkbox" id="formCheckbox" class="taskCheckbox sr-only" name="private" />
                           <div
                             class="box mr-3 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark">
                             <span class="text-white opacity-0">
@@ -147,14 +160,6 @@
                       </label>
 
                     </div>
-                    <div class="mb-6">
-                      <label class="mb-2.5 block text-black dark:text-white">
-                        Description
-                      </label>
-                      <textarea rows="6" placeholder="Type your description"
-                        class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
-                    </div>
-
                     <button class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
                       Add New One
                     </button>
