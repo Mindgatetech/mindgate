@@ -2,6 +2,11 @@ from django.contrib import admin, messages
 from . import models
 # Register your models here.
 
+
+
+class PaperAdmin(admin.ModelAdmin):
+    list_display = ('title','private')
+
 class DatasetAdmin(admin.ModelAdmin):
     list_display = ('name','type','private','ready_to_use')
     actions = ("uppercase",)  # Necessary
@@ -15,7 +20,7 @@ class DatasetAdmin(admin.ModelAdmin):
 class PipeJobAdmin(admin.ModelAdmin):
     list_display = ('aimodel','evaluation_type','metric','status')
 
-admin.site.register(models.Paper)
+admin.site.register(models.Paper, PaperAdmin)
 admin.site.register(models.Dataset, DatasetAdmin)
 admin.site.register(models.AiModel)
 admin.site.register(models.Preprocess)
