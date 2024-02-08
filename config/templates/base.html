@@ -359,7 +359,7 @@
                 <li>
                   <a
                     class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
-                    href="../aimodels/public"
+                    href="{% url 'aimodels' 'public' %}"
                     :class="page === 'public_aimodels' && '!text-white'"
                     >Public Ai Models</a
                   >
@@ -367,7 +367,7 @@
                 <li>
                   <a
                     class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
-                    href="../aimodels/mine"
+                    href="{% url 'aimodels' 'mine' %}"
                     :class="page === 'my_aimodels' && '!text-white'"
                     >My Ai Models</a
                   >

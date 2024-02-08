@@ -20,7 +20,8 @@ urlpatterns = [
     path('dataset/delete/<int:id>', views.dataset_delete, name='dataset_delete'),
     
     # AiModel
-    path('aimodels/<str:opt>', views.aimodels, name='aimodels'),
+    path('aimodels/<str:opt>', views.aimodels, name='aimodels'),    
+    path('aimodel/<int:id>', views.aimodel_details, name='aimodel_details'),
     path('aimodel/add', views.aimodel_add, name='aimodel_add'),
     path('aimodel/delete/<int:id>', views.aimodel_delete, name='aimodel_delete'),
 ]

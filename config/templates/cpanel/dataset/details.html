@@ -195,7 +195,7 @@
                             <option value="-1" >--</option>
                             {% if papers %}
                             {% for paper in papers %}
-                            <option value="{{ paper.id }}" {% for rp in dataset.related_paper.all %}{% if paper.id == rp.id %}selected{% endif %}{% endfor %} >{{ paper.title }}</option>
+                            <option value="{{ paper.id }}" {% for rp in dataset.related_paper.all %}{% if paper.id == rp.id %}selected{% else %} disabled {% endif %}{% endfor %} >{{ paper.title }}</option>
                             {% endfor %}
                             {% endif %}
                           </select>

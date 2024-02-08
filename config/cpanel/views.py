@@ -172,6 +172,7 @@ def dataset_add(request):
         dataset_link    = request.POST.get('dataset_link')
         related_paper_id= request.POST.get('related_paper_id') 
         private         = bool(request.POST.get('private', False))
+        dataset.related_paper.clear()
         dataset = Dataset.objects.create(user=user, name=name, description=description, type=type,
                                 research_field=research_field, channels=channels,
                                   dataset_link=dataset_link, private=private)
@@ -208,23 +209,65 @@ def aimodels(request, opt):
     }
     return render(request, 'cpanel/aimodel/aimodels.html', context=context)
 
+@login_required
+def aimodel_details(request, id):
+    user = request.user
+    if request.method == 'POST':
+        if AiModel.objects.filter(user=user, pk=id).exists():     
+            aimodel = AiModel.objects.get(user=user, pk=id)
+            aimodel.name = request.POST.get('name')
+            aimodel.description = request.POST.get('description')
+            aimodel.framework = request.POST.get('framework')
+            related_paper_id = request.POST.get('related_paper_id')
+            aimodel.approach = request.POST.get('approach')
+            aimodel.private = bool(request.POST.get('private', False))
+            if len(request.FILES) != 0:
+                aimodel.model = request.FILES['model']
+
+            aimodel.related_paper.clear()
+            if Paper.objects.filter(pk=related_paper_id).exists():
+                paper = Paper.objects.filter(pk=related_paper_id)
+                aimodel.related_paper.set(paper)
+            aimodel.save()
+            # message
+            return redirect('/cpanel/aimodels/mine')
+        # message you have not premission
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+    queryset = AiModel.objects.filter(user=user, pk=id) | AiModel.objects.filter(private=False, pk=id)
+    aimodel  = get_object_or_404(queryset, pk=id)
+    papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
+    context  = { 'aimodel': aimodel,
+                 'papers' : papers,
+                   #dataset
+                    }
+    return render(request, 'cpanel/aimodel/details.html', context=context)
+
 
 @login_required()
 def aimodel_add(request):
+    user = request.user
     if request.method == 'POST':
-        user = request.user
+        
         name            = request.POST.get('name')
         description     = request.POST.get('description')
-        type            = request.POST.get('type')
-        research_field  = request.POST.get('research_field')
-        channels        = request.POST.get('channels')
-        dataset_link    = request.POST.get('dataset_link')
+        framework       = request.POST.get('framework')
+        approach        = request.POST.get('approach')
         related_paper_id= request.POST.get('related_paper_id')
-        related_paper   = Paper.objects.get(pk=related_paper_id)
-        private         = request.POST.get('private')
-        Dataset.objects.create(user, name, description, type, research_field, channels, dataset_link, related_paper, private)
-        return redirect('aimodels', args=('mine',))
-    papers = AiModel.objects.filter(private=False)
+        model           = request.FILES['model']
+        private         = bool(request.POST.get('private', False))
+        aimodel = AiModel.objects.create(
+            user=user, name=name, description=description,
+              framework=framework, approach=approach, model=model,
+                private=private)
+        if Paper.objects.filter(pk=related_paper_id).exists():
+            paper = Paper.objects.filter(pk=related_paper_id)
+            aimodel.related_paper.set(paper)
+            aimodel.save()
+        return redirect('/cpanel/aimodels/mine')
+    papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
     context = {
         'papers': papers
     }
@@ -235,4 +278,4 @@ def aimodel_add(request):
 def aimodel_delete(request, id):
     user = request.user
     AiModel.objects.filter(user=user, pk=id).delete()
-    return redirect('aimodels', args=('mine',))
+    return redirect('/cpanel/aimodels/mine')
