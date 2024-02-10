@@ -74,11 +74,26 @@ def settings(request):
     user_id = request.user.id
     user = get_object_or_404(models.User, pk=user_id)
     if request.method == 'POST':
-        if request.POST.get('profile'):
-            pass
+        if 'profile' in request.POST:
+            fullname    = request.POST.get('fullname')
+            phone       = request.POST.get('phone')
+            email       = request.POST.get('email')
+            bio         = request.POST.get('bio')
+            researcher  = bool(request.POST.get('researcher', False))
+            user.fullname   = fullname
+            user.phone      = phone
+            user.email      = email
+            user.bio        = bio
+            user.researcher = researcher
+            user.save()
+            #message
+            return redirect('settings')
         else:
-            pass
-    
+            if len(request.FILES) != 0:
+                    print('OK')
+                    user.avatar = request.FILES['avatarfile']
+                    user.save()
+                    return redirect('settings')
     context = {
         'user' : user,
     }

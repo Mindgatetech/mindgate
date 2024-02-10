@@ -36,7 +36,6 @@
                     {% if user %}
                     <form action="{% url 'settings' %}" method="POST">
                         {% csrf_token %}
-                    <input type="hidden" name="profile" value="change" >
                       <div class="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
                         <div class="w-full sm:w-1/2">
                           <label class="mb-3 block text-sm font-medium text-black dark:text-white" for="fullName">Full
@@ -57,7 +56,7 @@
                             </span>
                             <input
                               class="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 font-medium text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                              type="text" name="fullName" id="fullName" value="{{ user.fullname }}" />
+                              type="text" name="fullname" id="fullName" value="{{ user.fullname }}" />
                           </div>
                         </div>
 
@@ -66,7 +65,7 @@
                             for="phoneNumber">Phone Number</label>
                           <input
                             class="w-full rounded border border-stroke bg-gray py-3 px-4.5 font-medium text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                            type="text" name="phoneNumber" id="phoneNumber" value="{{ user.phone }}" />
+                            type="text" name="phone" id="phoneNumber" value="{{ user.phone }}" />
                         </div>
                       </div>
 
@@ -98,7 +97,7 @@
                           for="Username">Username</label>
                         <input
                           class="w-full rounded border border-stroke bg-gray py-3 px-4.5 font-medium text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                          type="text" name="Username" id="Username" value="{{ user.username }}" readonly />
+                          type="text" id="Username" value="{{ user.username }}" readonly />
                       </div>
 
                       <div class="mb-5.5">
@@ -129,26 +128,27 @@
                             name="bio" id="bio" rows="6" placeholder="Write your bio here">{{ user.bio }}</textarea>
                         </div>
                       </div>
-                      <div x-data="{ checkboxToggle: {% if user.researcher %}true{% else %}false{% endif %} }">
-                        <label for="checkboxLabelTwo" class="flex cursor-pointer select-none items-center">
-                          <div class="relative">
-                            <input type="checkbox" id="checkboxLabelTwo" class="sr-only"
-                              @change="checkboxToggle = !checkboxToggle" />
-                            <div :class="checkboxToggle && 'border-primary bg-gray dark:bg-transparent'"
-                              class="mr-4 flex h-5 w-5 items-center justify-center rounded border">
-                              <span :class="checkboxToggle && '!opacity-100'" class="opacity-0">
-                                <svg width="11" height="8" viewBox="0 0 11 8" fill="none"
+                      <div class="mt-5 mb-5.5 flex items-center justify-between">
+                        <label for="formCheckbox" class="flex cursor-pointer">
+                          <div class="relative pt-0.5">
+                            <input type="checkbox" id="formCheckbox" name="researcher"
+                            class="taskCheckbox sr-only" {% if user.researcher %}checked{% endif %} />
+                            <div
+                              class="box mr-3 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark">
+                              <span class="text-white opacity-0">
+                                <svg class="fill-current" width="10" height="7" viewBox="0 0 10 7" fill="none"
                                   xmlns="http://www.w3.org/2000/svg">
-                                  <path
-                                    d="M10.0915 0.951972L10.0867 0.946075L10.0813 0.940568C9.90076 0.753564 9.61034 0.753146 9.42927 0.939309L4.16201 6.22962L1.58507 3.63469C1.40401 3.44841 1.11351 3.44879 0.932892 3.63584C0.755703 3.81933 0.755703 4.10875 0.932892 4.29224L0.932878 4.29225L0.934851 4.29424L3.58046 6.95832C3.73676 7.11955 3.94983 7.2 4.1473 7.2C4.36196 7.2 4.55963 7.11773 4.71406 6.9584L10.0468 1.60234C10.2436 1.4199 10.2421 1.1339 10.0915 0.951972ZM4.2327 6.30081L4.2317 6.2998C4.23206 6.30015 4.23237 6.30049 4.23269 6.30082L4.2327 6.30081Z"
-                                    fill="#3056D3" stroke="#3056D3" stroke-width="0.4"></path>
+                                  <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M9.70685 0.292804C9.89455 0.480344 10 0.734667 10 0.999847C10 1.26503 9.89455 1.51935 9.70685 1.70689L4.70059 6.7072C4.51283 6.89468 4.2582 7 3.9927 7C3.72721 7 3.47258 6.89468 3.28482 6.7072L0.281063 3.70701C0.0986771 3.5184 -0.00224342 3.26578 3.785e-05 3.00357C0.00231912 2.74136 0.10762 2.49053 0.29326 2.30511C0.4789 2.11969 0.730026 2.01451 0.992551 2.01224C1.25508 2.00996 1.50799 2.11076 1.69683 2.29293L3.9927 4.58607L8.29108 0.292804C8.47884 0.105322 8.73347 0 8.99896 0C9.26446 0 9.51908 0.105322 9.70685 0.292804Z"
+                                    fill="" />
                                 </svg>
                               </span>
                             </div>
                           </div>
-                          I am a researcher
+                          <p>Researcher</p>
                         </label>
                       </div>
+
                       <div class="flex justify-end gap-4.5">
                         <button
                           class="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
@@ -157,7 +157,7 @@
                         </button>
                         <button
                           class="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
-                          type="submit">
+                          type="submit" name="profile">
                           Save
                         </button>
                       </div>
@@ -175,9 +175,8 @@
                     </h3>
                   </div>
                   <div class="p-7">
-                    <form action="{% url 'settings' %}" method="POST" >
+                    <form action="{% url 'settings' %}" method="POST" enctype="multipart/form-data" >
                         {% csrf_token %}
-                    <input type="hidden" name="avatar" value="change" >
                       <div class="mb-4 flex items-center gap-3">
                         <div class="h-14 w-14 rounded-full">
                           <img src="{{ user.avatar.url }}" alt="User" />
@@ -199,7 +198,7 @@
 
                       <div id="FileUpload"
                         class="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border-2 border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5">
-                        <input type="file" accept="image/*"
+                        <input type="file" accept="image/*" name="avatarfile"
                           class="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none" />
                         <div class="flex flex-col items-center justify-center space-y-3">
                           <span
@@ -234,7 +233,7 @@
                         </button>
                         <button
                           class="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
-                          type="submit">
+                          type="submi" >
                           Save
                         </button>
                       </div>
