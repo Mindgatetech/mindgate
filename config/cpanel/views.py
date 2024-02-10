@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from . import models
-from mindnet.models import Dataset, Paper, AiModel
+from mindnet.models import Dataset, Paper, AiModel, Metric
 
 @login_required()
 def dashboard(request):
@@ -279,3 +279,157 @@ def aimodel_delete(request, id):
     user = request.user
     AiModel.objects.filter(user=user, pk=id).delete()
     return redirect('/cpanel/aimodels/mine')
+
+# Metric 
+
+@login_required
+def metrics(request, opt):
+    if opt == 'public':
+        metrics = Metric.objects.filter(private=False)
+    else:
+        user = request.user
+        metrics = Metric.objects.filter(user=user)
+    context  = {
+        'metrics': metrics
+    }
+    return render(request, 'cpanel/metric/metrics.html', context=context)
+
+@login_required
+def metric_details(request, id):
+    user = request.user
+    if request.method == 'POST':
+        if Metric.objects.filter(user=user, pk=id).exists():     
+            metric = Metric.objects.get(user=user, pk=id)
+            metric.name = request.POST.get('name')
+            metric.description = request.POST.get('description')
+            related_paper_id = request.POST.get('related_paper_id')
+            metric.private = bool(request.POST.get('private', False))
+            if len(request.FILES) != 0:
+                metric.metric = request.FILES['metricfile']
+            metric.related_paper.clear()
+            if Paper.objects.filter(pk=related_paper_id).exists():
+                paper = Paper.objects.filter(pk=related_paper_id)
+                metric.related_paper.set(paper)
+            metric.save()
+            # message
+            return redirect('/cpanel/metrics/mine')
+        # message you have not premission
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+    queryset = Metric.objects.filter(user=user, pk=id) | Metric.objects.filter(private=False, pk=id)
+    metric  = get_object_or_404(queryset, pk=id)
+    papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
+    context  = { 'metric': metric,
+                 'papers' : papers,
+                   #dataset
+                    }
+    return render(request, 'cpanel/metric/details.html', context=context)
+
+@login_required()
+def metric_add(request):
+    user = request.user
+    if request.method == 'POST':
+    
+        name            = request.POST.get('name')
+        description     = request.POST.get('description')
+        related_paper_id= request.POST.get('related_paper_id')
+        metricfile      = request.FILES['metricfile']
+        private         = bool(request.POST.get('private', False))
+        metric = Metric.objects.create(
+            user=user, name=name, description=description,
+              metric=metricfile, private=private)
+        if Paper.objects.filter(pk=related_paper_id).exists():
+            paper = Paper.objects.filter(pk=related_paper_id)
+            metric.related_paper.set(paper)
+            metric.save()
+        return redirect('/cpanel/metrics/mine')
+    papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
+    context = {
+        'papers': papers
+    }
+    return render(request, 'cpanel/metric/add.html', context=context)
+
+@login_required()
+def metric_delete(request, id):
+    user = request.user
+    Metric.objects.filter(user=user, pk=id).delete()
+    return redirect('/cpanel/metrics/mine')
+
+# Metric 
+
+@login_required
+def metrics(request, opt):
+    if opt == 'public':
+        metrics = Metric.objects.filter(private=False)
+    else:
+        user = request.user
+        metrics = Metric.objects.filter(user=user)
+    context  = {
+        'metrics': metrics
+    }
+    return render(request, 'cpanel/metric/metrics.html', context=context)
+
+@login_required
+def metric_details(request, id):
+    user = request.user
+    if request.method == 'POST':
+        if Metric.objects.filter(user=user, pk=id).exists():     
+            metric = Metric.objects.get(user=user, pk=id)
+            metric.name = request.POST.get('name')
+            metric.description = request.POST.get('description')
+            related_paper_id = request.POST.get('related_paper_id')
+            metric.private = bool(request.POST.get('private', False))
+            if len(request.FILES) != 0:
+                metric.metric = request.FILES['metricfile']
+            metric.related_paper.clear()
+            if Paper.objects.filter(pk=related_paper_id).exists():
+                paper = Paper.objects.filter(pk=related_paper_id)
+                metric.related_paper.set(paper)
+            metric.save()
+            # message
+            return redirect('/cpanel/metrics/mine')
+        # message you have not premission
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+    queryset = Metric.objects.filter(user=user, pk=id) | Metric.objects.filter(private=False, pk=id)
+    metric  = get_object_or_404(queryset, pk=id)
+    papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
+    context  = { 'metric': metric,
+                 'papers' : papers,
+                   #dataset
+                    }
+    return render(request, 'cpanel/metric/details.html', context=context)
+
+@login_required()
+def metric_add(request):
+    user = request.user
+    if request.method == 'POST':
+    
+        name            = request.POST.get('name')
+        description     = request.POST.get('description')
+        related_paper_id= request.POST.get('related_paper_id')
+        metricfile      = request.FILES['metricfile']
+        private         = bool(request.POST.get('private', False))
+        metric = Metric.objects.create(
+            user=user, name=name, description=description,
+              metric=metricfile, private=private)
+        if Paper.objects.filter(pk=related_paper_id).exists():
+            paper = Paper.objects.filter(pk=related_paper_id)
+            metric.related_paper.set(paper)
+            metric.save()
+        return redirect('/cpanel/metrics/mine')
+    papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
+    context = {
+        'papers': papers
+    }
+    return render(request, 'cpanel/metric/add.html', context=context)
+
+@login_required()
+def metric_delete(request, id):
+    user = request.user
+    Metric.objects.filter(user=user, pk=id).delete()
+    return redirect('/cpanel/metrics/mine')

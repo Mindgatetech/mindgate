@@ -24,4 +24,10 @@ urlpatterns = [
     path('aimodel/<int:id>', views.aimodel_details, name='aimodel_details'),
     path('aimodel/add', views.aimodel_add, name='aimodel_add'),
     path('aimodel/delete/<int:id>', views.aimodel_delete, name='aimodel_delete'),
+
+    # Metric
+    path('metrics/<str:opt>', views.metrics, name='metrics'),    
+    path('metric/<int:id>', views.metric_details, name='metric_details'),
+    path('metric/add', views.metric_add, name='metric_add'),
+    path('metric/delete/<int:id>', views.metric_delete, name='metric_delete'),
 ]
