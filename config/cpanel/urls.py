@@ -30,4 +30,10 @@ urlpatterns = [
     path('metric/<int:id>', views.metric_details, name='metric_details'),
     path('metric/add', views.metric_add, name='metric_add'),
     path('metric/delete/<int:id>', views.metric_delete, name='metric_delete'),
+
+    # Scaler
+    path('scalers/<str:opt>', views.scalers, name='scalers'),    
+    path('scaler/<int:id>', views.scaler_details, name='scaler_details'),
+    path('scaler/add', views.scaler_add, name='scaler_add'),
+    path('scaler/delete/<int:id>', views.scaler_delete, name='scaler_delete'),
 ]

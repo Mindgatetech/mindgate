@@ -475,10 +475,11 @@
                               >Add New Evaluation</a
                             >
                           </li>
+                          <!-- Scaler -->
                           <li>
                             <a
                               class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
-                              href="../aimodels/public"
+                              href="{% url 'scalers' 'public' %}"
                               :class="page === 'public_aimodels' && '!text-white'"
                               >Public Scaler</a
                             >
@@ -486,7 +487,7 @@
                           <li>
                             <a
                               class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
-                              href="../aimodels/mine"
+                              href="{% url 'scalers' 'mine' %}"
                               :class="page === 'my_aimodels' && '!text-white'"
                               >My Scaler</a
                             >
@@ -494,7 +495,7 @@
                           <li>
                             <a
                               class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
-                              href="{% url 'aimodel_add' %}"
+                              href="{% url 'scaler_add' %}"
                               :class="page === 'add_aimodel' && '!text-white'"
                               >Add New Scaler</a
                             >

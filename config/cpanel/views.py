@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from . import models
-from mindnet.models import Dataset, Paper, AiModel, Metric
+from mindnet.models import Dataset, Paper, AiModel, Metric, Scaler
 
 @login_required()
 def dashboard(request):
@@ -357,79 +357,79 @@ def metric_delete(request, id):
     Metric.objects.filter(user=user, pk=id).delete()
     return redirect('/cpanel/metrics/mine')
 
-# Metric 
+# Scaler 
 
 @login_required
-def metrics(request, opt):
+def scalers(request, opt):
     if opt == 'public':
-        metrics = Metric.objects.filter(private=False)
+        scalers = Scaler.objects.filter(private=False)
     else:
         user = request.user
-        metrics = Metric.objects.filter(user=user)
+        scalers = Scaler.objects.filter(user=user)
     context  = {
-        'metrics': metrics
+        'scalers': scalers
     }
-    return render(request, 'cpanel/metric/metrics.html', context=context)
+    return render(request, 'cpanel/scaler/scalers.html', context=context)
 
 @login_required
-def metric_details(request, id):
+def scaler_details(request, id):
     user = request.user
     if request.method == 'POST':
-        if Metric.objects.filter(user=user, pk=id).exists():     
-            metric = Metric.objects.get(user=user, pk=id)
-            metric.name = request.POST.get('name')
-            metric.description = request.POST.get('description')
+        if Scaler.objects.filter(user=user, pk=id).exists():     
+            scaler = Scaler.objects.get(user=user, pk=id)
+            scaler.name = request.POST.get('name')
+            scaler.description = request.POST.get('description')
             related_paper_id = request.POST.get('related_paper_id')
-            metric.private = bool(request.POST.get('private', False))
+            scaler.private = bool(request.POST.get('private', False))
             if len(request.FILES) != 0:
-                metric.metric = request.FILES['metricfile']
-            metric.related_paper.clear()
+                scaler.scaler = request.FILES['scalerfile']
+            scaler.related_paper.clear()
             if Paper.objects.filter(pk=related_paper_id).exists():
                 paper = Paper.objects.filter(pk=related_paper_id)
-                metric.related_paper.set(paper)
-            metric.save()
+                scaler.related_paper.set(paper)
+            scaler.save()
             # message
-            return redirect('/cpanel/metrics/mine')
+            return redirect('/cpanel/scalers/mine')
         # message you have not premission
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-    queryset = Metric.objects.filter(user=user, pk=id) | Metric.objects.filter(private=False, pk=id)
-    metric  = get_object_or_404(queryset, pk=id)
+    queryset = Scaler.objects.filter(user=user, pk=id) | Scaler.objects.filter(private=False, pk=id)
+    scaler  = get_object_or_404(queryset, pk=id)
     papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
-    context  = { 'metric': metric,
+    context  = { 'scaler': scaler,
                  'papers' : papers,
                    #dataset
                     }
-    return render(request, 'cpanel/metric/details.html', context=context)
+    return render(request, 'cpanel/scaler/details.html', context=context)
 
 @login_required()
-def metric_add(request):
+def scaler_add(request):
     user = request.user
     if request.method == 'POST':
     
         name            = request.POST.get('name')
         description     = request.POST.get('description')
         related_paper_id= request.POST.get('related_paper_id')
-        metricfile      = request.FILES['metricfile']
+        scalerfile      = request.FILES['scalerfile']
         private         = bool(request.POST.get('private', False))
-        metric = Metric.objects.create(
+        scaler = Scaler.objects.create(
             user=user, name=name, description=description,
-              metric=metricfile, private=private)
+              scaler=scalerfile, private=private)
         if Paper.objects.filter(pk=related_paper_id).exists():
             paper = Paper.objects.filter(pk=related_paper_id)
-            metric.related_paper.set(paper)
-            metric.save()
-        return redirect('/cpanel/metrics/mine')
+            scaler.related_paper.set(paper)
+            scaler.save()
+        return redirect('/cpanel/scalers/mine')
     papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
     context = {
         'papers': papers
     }
-    return render(request, 'cpanel/metric/add.html', context=context)
+    return render(request, 'cpanel/scaler/add.html', context=context)
 
 @login_required()
-def metric_delete(request, id):
+def scaler_delete(request, id):
     user = request.user
-    Metric.objects.filter(user=user, pk=id).delete()
-    return redirect('/cpanel/metrics/mine')
+    Scaler.objects.filter(user=user, pk=id).delete()
+    return redirect('/cpanel/scalers/mine')
