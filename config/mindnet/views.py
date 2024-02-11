@@ -74,7 +74,7 @@ def hyperparameter_get(arg):
 # PipeJob Processor View
 def pipjob_processing(model):
     efp             = model.dataset.extracted_file_path
-    cv              = model.crossvalidation
+    cv              = model.validationtechnique
     preprocess      = model.preprocess
     aimodel         = model.aimodel
     scaler          = model.scaler

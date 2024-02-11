@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from . import models
-from mindnet.models import Dataset, Paper, AiModel, Metric, Scaler
+from mindnet.models import Paper, Dataset, AiModel, Preprocess, Metric, Scaler, ValidationTechnique, PipeJob
 
 @login_required()
 def dashboard(request):
@@ -90,7 +90,6 @@ def settings(request):
             return redirect('settings')
         else:
             if len(request.FILES) != 0:
-                    print('OK')
                     user.avatar = request.FILES['avatarfile']
                     user.save()
                     return redirect('settings')
@@ -283,8 +282,12 @@ def aimodel_add(request):
             aimodel.save()
         return redirect('/cpanel/aimodels/mine')
     papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
+    approach = AiModel.approach.field.choices
+    framework= AiModel.framework.field.choices
     context = {
-        'papers': papers
+        'papers': papers,
+        'approach': approach,
+        'framework': framework,
     }
     return render(request, 'cpanel/aimodel/add.html', context=context)
 
@@ -445,6 +448,107 @@ def scaler_add(request):
 
 @login_required()
 def scaler_delete(request, id):
+    user = request.user
+    Scaler.objects.filter(user=user, pk=id).delete()
+    return redirect('/cpanel/scalers/mine')
+
+# Pipe Job
+
+@login_required
+def pipejobs(request):
+    user = request.user
+    pipejobs = PipeJob.objects.filter(user=user)
+    context  = {
+        'pipejobs': pipejobs
+    }
+    return render(request, 'cpanel/pipejob/pipejobs.html', context=context)
+    
+@login_required
+def pipejob_details(request, id):
+    user = request.user
+    if request.method == 'POST':
+        if Scaler.objects.filter(user=user, pk=id).exists():     
+            scaler = Scaler.objects.get(user=user, pk=id)
+            scaler.name = request.POST.get('name')
+            scaler.description = request.POST.get('description')
+            related_paper_id = request.POST.get('related_paper_id')
+            scaler.private = bool(request.POST.get('private', False))
+            if len(request.FILES) != 0:
+                scaler.scaler = request.FILES['scalerfile']
+            scaler.related_paper.clear()
+            if Paper.objects.filter(pk=related_paper_id).exists():
+                paper = Paper.objects.filter(pk=related_paper_id)
+                scaler.related_paper.set(paper)
+            scaler.save()
+            # message
+            return redirect('/cpanel/scalers/mine')
+        # message you have not premission
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+    queryset = Scaler.objects.filter(user=user, pk=id) | Scaler.objects.filter(private=False, pk=id)
+    scaler  = get_object_or_404(queryset, pk=id)
+    papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
+    context  = { 'scaler': scaler,
+                 'papers' : papers,
+                   #dataset
+                    }
+    return render(request, 'cpanel/scaler/details.html', context=context)
+
+@login_required()
+def pipejob_add(request):
+    user = request.user
+    if request.method == 'POST':
+
+        dataset_id      = request.POST.get('dataset_id')
+        aimodel_id      = request.POST.get('aimodel_id')
+        preprocess_id   = request.POST.get('preprocess_id')
+        scaler_id       = request.POST.get('scaler_id')
+        metric_id       = request.POST.get('metric_id')
+        vt_id           = request.POST.get('vt_id')
+        tmin            = int(request.POST.get('tmin'))
+        tmax            = int(request.POST.get('tmax'))
+        event_id        = request.POST.get('event_id')
+        montage_type_id = request.POST.get('montage_type_id')
+        filter_id       = request.POST.get('filter_id')
+        low_band        = float(request.POST.get('low_band'))
+        high_band       = float(request.POST.get('high_band'))
+        epoch_from_id   = request.POST.get('epoch_from_id')
+        duration        = request.POST.get('duration')
+        overlap         = request.POST.get('overlap')
+        event_from_id   = request.POST.get('event_from_id')
+        on_missing_id   = request.POST.get('on_missing_id')
+        stim_channel    = request.POST.get('stim_channel')
+        eeg_channels    = request.POST.get('eeg_channels')
+        eog_channels    = request.POST.get('eog_channels')
+        exclude         = request.POST.get('exclude')
+        baseline        = request.POST.get('baseline')
+        projection      = bool(request.POST.get('projection', False))
+        private         = bool(request.POST.get('private', False))
+
+
+        return redirect('/cpanel/scalers/mine')
+    datasets         = Dataset.objects.filter(private=False) | Dataset.objects.filter(user=user)
+    aimodels         = AiModel.objects.filter(private=False) | AiModel.objects.filter(user=user)
+    preprocess       = Preprocess.objects.filter(private=False) | Preprocess.objects.filter(user=user)
+    scalers          = Scaler.objects.filter(private=False) | Scaler.objects.filter(user=user) 
+    metrics          = Metric.objects.filter(private=False) | Metric.objects.filter(user=user)
+    vts              = ValidationTechnique.objects.filter(private=False) | ValidationTechnique.objects.filter(user=user)
+    montage_type     = PipeJob.montage_type.field.choices
+    filter           = PipeJob.filter.field.choices
+    epoch_from       = PipeJob.epoch_from.field.choices
+    event_from       = PipeJob.event_from.field.choices
+    on_missing       = PipeJob.on_missing.field.choices
+    context = {
+        'datasets':datasets, 'aimodels':aimodels, 'preprocess':preprocess, 
+            'scalers':scalers, 'metrics':metrics, 'vts':vts, 'montage_type':montage_type,
+              'filter':filter, 'epoch_from':epoch_from, 'event_from':event_from, 'on_missing':on_missing  
+    }
+    return render(request, 'cpanel/pipejob/add.html', context=context)
+
+@login_required()
+def pipejob_delete(request, id):
     user = request.user
     Scaler.objects.filter(user=user, pk=id).delete()
     return redirect('/cpanel/scalers/mine')

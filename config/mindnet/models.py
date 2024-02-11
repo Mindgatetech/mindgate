@@ -104,7 +104,7 @@ class Scaler(models.Model):
         return self.name
 
 # Cross-validation Model
-class CrossValidation(models.Model):
+class ValidationTechnique(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_cross_validation')
     name            = models.CharField(max_length=25,)
     description     = models.TextField(default=None, blank=True)
@@ -138,7 +138,7 @@ class PipeJob(models.Model):
     preprocess      = models.ForeignKey('Preprocess', on_delete=models.CASCADE, null=True)
     scaler          = models.ForeignKey('Scaler', on_delete=models.CASCADE, null=True)
     metric          = models.ForeignKey('Metric', on_delete=models.CASCADE, null=True)
-    crossvalidation = models.ForeignKey('Crossvalidation', on_delete=models.CASCADE, null=True)
+    validationtechnique = models.ForeignKey('ValidationTechnique', on_delete=models.CASCADE, null=True)
     aimodel         = models.ForeignKey('AiModel', on_delete=models.CASCADE, null=True)
     test_size       = models.FloatField(max_length=5, default=0.3)
     tmin            = models.FloatField(max_length=5, default=0.5)
@@ -150,6 +150,10 @@ class PipeJob(models.Model):
     filter          = models.CharField(choices=FILTER_OPT, default='Bandpass', max_length=20)
     low_band        = models.FloatField(default=8.0)
     high_band       = models.FloatField(default=35.0)
+    EPOCH_OPT       = [('E', 'Events'), ('F', 'Fixed Lenght')]
+    epoch_from      = models.CharField(max_length=2, choices=EPOCH_OPT, default='E')
+    duration        = models.FloatField(default=4.0, blank=True)
+    overlap         = models.FloatField(default=1.0, blank=True)
     EVENT_OPT       = [('A', 'Annotations'), ('SC', 'Stim Channel')]
     event_from      = models.CharField(max_length=2, choices=EVENT_OPT, default='Annotations')
     MISSING_OPT     = [('warn', 'warn'), ('ignore', 'Ignore'), ('raise', 'Raise')]

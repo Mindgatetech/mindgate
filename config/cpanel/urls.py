@@ -36,4 +36,10 @@ urlpatterns = [
     path('scaler/<int:id>', views.scaler_details, name='scaler_details'),
     path('scaler/add', views.scaler_add, name='scaler_add'),
     path('scaler/delete/<int:id>', views.scaler_delete, name='scaler_delete'),
+
+    # PipeJob
+    path('pipejobs', views.pipejobs, name='pipejobs'),    
+    path('pipejob/<int:id>', views.pipejob_details, name='pipejob_details'),
+    path('pipejob/add', views.pipejob_add, name='pipejob_add'),
+    path('pipejob/delete/<int:id>', views.pipejob_delete, name='pipejob_delete'),
 ]
