@@ -41,7 +41,7 @@
                           Dataset
                         </label>
                         <div class="relative z-20 bg-transparent dark:bg-form-input">
-                          <select name="dataset_id"
+                          <select name="dataset_id" required
                             class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                             {% if datasets %}
                             {% for dataset in datasets %}
@@ -67,7 +67,7 @@
                           Ai Model
                         </label>
                         <div class="relative z-20 bg-transparent dark:bg-form-input">
-                          <select name="aimodel_id"
+                          <select name="aimodel_id" required
                             class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                             {% if aimodels %}
                             {% for aimodel in aimodels %}
@@ -94,7 +94,7 @@
                           Preprocessor
                         </label>
                         <div class="relative z-20 bg-transparent dark:bg-form-input">
-                          <select name="preprocess_id"
+                          <select name="preprocess_id" required
                             class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                             {% if preprocess %}
                             {% for pp in preprocess %}
@@ -120,7 +120,7 @@
                           Scaler
                         </label>
                         <div class="relative z-20 bg-transparent dark:bg-form-input">
-                          <select name="scaler_id"
+                          <select name="scaler_id" required
                             class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                             {% if scalers %}
                             {% for scaler in scalers %}
@@ -146,7 +146,7 @@
                           Metric
                         </label>
                         <div class="relative z-20 bg-transparent dark:bg-form-input">
-                          <select name="metric_id"
+                          <select name="metric_id" required
                             class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                             {% if metrics %}
                             {% for metric in metrics %}
@@ -175,7 +175,7 @@
                           Validation techniques
                         </label>
                         <div class="relative z-20 bg-transparent dark:bg-form-input">
-                          <select name="vt_id"
+                          <select name="vt_id" required
                             class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                             {% if vts %}
                             {% for vt in vts %}
@@ -265,14 +265,14 @@
                         <label class="mb-2.5 block text-black dark:text-white">
                           Low Band <span class="text-meta-1">*</span>
                         </label>
-                        <input type="text" placeholder="Enter Low Band" 
+                        <input type="number" placeholder="Enter Low Band" name="low_band"
                           class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
                       </div>
                       <div class="w-full xl:w-1/2">
                         <label class="mb-2.5 block text-black dark:text-white">
                           High Band <span class="text-meta-1">*</span>
                         </label>
-                        <input type="text" placeholder="Enter High Band" 
+                        <input type="number" placeholder="Enter High Band" name="high_band"
                           class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
                       </div>
 
@@ -332,24 +332,67 @@
                         <label class="mb-2.5 block text-black dark:text-white">
                           Duration <span class="text-meta-1">*</span>
                         </label>
-                        <input type="text" placeholder="Enter Duration" name="duration" 
+                        <input type="number" placeholder="Enter Duration" name="duration" 
                           class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
                       </div>
                       <div class="w-full xl:w-1/4">
                         <label class="mb-2.5 block text-black dark:text-white">
                           Overlap <span class="text-meta-1">*</span>
                         </label>
-                        <input type="text" placeholder="Enter Overlap" name="overlap"
+                        <input type="number" placeholder="Enter Overlap" name="overlap"
+                          class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
+                      </div>
+                      <div class="w-full xl:w-1/4">
+                        <label class="mb-2.5 block text-black dark:text-white">
+                          Event IDs <span class="text-meta-1">*</span>
+                        </label>
+                        <input type="text" placeholder="Enter Event ids" name="event_id"
                           class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
                       </div>
                       <div class="w-full xl:w-1/4">
                         <label class="mb-2.5 block text-black dark:text-white">
                           Stim channel <span class="text-meta-1">*</span>
                         </label>
-                        <input type="text" placeholder="Enter Stim channel" 
+                        <input type="text" placeholder="Enter Stim channel" name="stim_channel"
                           class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
                       </div>
-                      <div class="w-full xl:w-1/4">
+
+                    </div>
+                    <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div class="w-full xl:w-1/3">
+                        <label class="mb-2.5 block text-black dark:text-white">
+                          EOG channels <span class="text-meta-1">*</span>
+                        </label>
+                        <input type="text" placeholder="EOG : 'EOG:ch01', 'EOG:ch02'" name="eog_channels"
+                          class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
+                      </div>
+
+                      <div class="w-full xl:w-2/3">
+                        <label class="mb-2.5 block text-black dark:text-white">
+                          EEG channels
+                        </label>
+                        <input type="text" placeholder="" value="None" name="eeg_channels"
+                          class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
+                      </div>
+                    </div>
+
+
+                    <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div class="w-full xl:w-1/3">
+                        <label class="mb-2.5 block text-black dark:text-white">
+                          Exclude
+                        </label>
+                        <input type="text" placeholder="Enter Bads" value="Bads" name="exclude"
+                          class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
+                      </div>
+                      <div class="w-full xl:w-1/3">
+                        <label class="mb-2.5 block text-black dark:text-white">
+                          Baseline
+                        </label>
+                        <input type="text" placeholder="" value="None" name="baseline"
+                          class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
+                      </div>
+                      <div class="w-full xl:w-1/3">
                         <label class="mb-2.5 block text-black dark:text-white">
                           On missing
                         </label>
@@ -372,45 +415,13 @@
                           </span>
                         </div>
                       </div>
-                    </div>
-                    <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div class="w-full xl:w-1/3">
-                        <label class="mb-2.5 block text-black dark:text-white">
-                          EOG channels <span class="text-meta-1">*</span>
-                        </label>
-                        <input type="text" placeholder="EOG : 'EOG:ch01', 'EOG:ch02'"
-                          class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
-                      </div>
 
-                      <div class="w-full xl:w-2/3">
-                        <label class="mb-2.5 block text-black dark:text-white">
-                          EEG channels
-                        </label>
-                        <input type="text" placeholder="" value="None"
-                          class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
-                      </div>
                     </div>
-                    <div class="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div class="w-full xl:w-1/2">
-                        <label class="mb-2.5 block text-black dark:text-white">
-                          Exclude
-                        </label>
-                        <input type="text" placeholder="Enter Bads" required
-                          class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
-                      </div>
-                      <div class="w-full xl:w-1/2">
-                        <label class="mb-2.5 block text-black dark:text-white">
-                          Base Line
-                        </label>
-                        <input type="text" placeholder="" value="None"
-                          class="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
-                      </div>
-                    </div>
-
+<!--
                     <div class="mt-5 mb-5.5 flex items-center justify-between">
                       <label for="formCheckbox" class="flex cursor-pointer">
                         <div class="relative pt-0.5">
-                          <input type="checkbox" id="formCheckbox" class="taskCheckbox sr-only" />
+                          <input type="checkbox" id="formCheckboxx" class="taskCheckbox sr-only" name="Projection" />
                           <div
                             class="box mr-3 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark">
                             <span class="text-white opacity-0">
@@ -427,11 +438,11 @@
                       </label>
 
                     </div>
-
+-->
                     <div class="mt-5 mb-5.5 flex items-center justify-between">
                       <label for="formCheckbox" class="flex cursor-pointer">
                         <div class="relative pt-0.5">
-                          <input type="checkbox" id="formCheckbox" class="taskCheckbox sr-only" />
+                          <input type="checkbox" id="formCheckbox" class="taskCheckbox sr-only" name="private" />
                           <div
                             class="box mr-3 flex h-5 w-5 items-center justify-center rounded border border-stroke dark:border-strokedark">
                             <span class="text-white opacity-0">

@@ -86,7 +86,7 @@ def settings(request):
             user.bio        = bio
             user.researcher = researcher
             user.save()
-            #message
+            messages.success(request, 'Settings has updated successfully.')
             return redirect('settings')
         else:
             if len(request.FILES) != 0:
@@ -498,6 +498,10 @@ def pipejob_details(request, id):
 
 @login_required()
 def pipejob_add(request):
+    def validator(data):
+        if data is '':
+            return -1.0
+        return float(data)
     user = request.user
     if request.method == 'POST':
 
@@ -507,16 +511,16 @@ def pipejob_add(request):
         scaler_id       = request.POST.get('scaler_id')
         metric_id       = request.POST.get('metric_id')
         vt_id           = request.POST.get('vt_id')
-        tmin            = int(request.POST.get('tmin'))
-        tmax            = int(request.POST.get('tmax'))
+        tmin            = validator(request.POST.get('tmin'))
+        tmax            = validator(request.POST.get('tmax'))
         event_id        = request.POST.get('event_id')
         montage_type_id = request.POST.get('montage_type_id')
         filter_id       = request.POST.get('filter_id')
-        low_band        = float(request.POST.get('low_band'))
-        high_band       = float(request.POST.get('high_band'))
+        low_band        = request.POST.get('low_band', 0)
+        high_band       = request.POST.get('high_band', 120)
         epoch_from_id   = request.POST.get('epoch_from_id')
-        duration        = request.POST.get('duration')
-        overlap         = request.POST.get('overlap')
+        duration        = validator(request.POST.get('duration'))
+        overlap         = validator(request.POST.get('overlap'))
         event_from_id   = request.POST.get('event_from_id')
         on_missing_id   = request.POST.get('on_missing_id')
         stim_channel    = request.POST.get('stim_channel')
@@ -526,9 +530,27 @@ def pipejob_add(request):
         baseline        = request.POST.get('baseline')
         projection      = bool(request.POST.get('projection', False))
         private         = bool(request.POST.get('private', False))
-
-
-        return redirect('/cpanel/scalers/mine')
+        dataset     = get_object_or_404(Dataset, pk=dataset_id)
+        aimodel     = get_object_or_404(AiModel, pk=aimodel_id)
+        preprocess  = get_object_or_404(Preprocess, pk=preprocess_id)
+        scaler      = get_object_or_404(Scaler, pk=scaler_id)
+        metric      = get_object_or_404(Metric, pk=metric_id)
+        vt          = get_object_or_404(ValidationTechnique, pk=vt_id)
+        
+        if PipeJob.objects.create(
+            user=user, dataset=dataset, aimodel=aimodel, preprocess=preprocess, scaler=scaler,
+              metric=metric, validationtechnique=vt, tmin=tmin, tmax=tmax, epoch_from=epoch_from_id,
+                duration=duration, overlap=overlap, event_from=event_from_id, event_id=event_id, filter=filter_id,
+                  high_band=high_band, low_band=low_band, on_missing=on_missing_id, montage_type=montage_type_id, stim_channel=stim_channel,
+                  eog_channels=eog_channels, eeg_channels=eeg_channels, exclude=exclude, baseline=baseline, projection=projection, private=private
+                  ) :
+            messages.success(request, 'Pipe Job has sent successfully.')
+            pass
+        else :
+            messages.error(request, 'There is an error, try again...')
+            pass    
+        
+        return redirect('pipejobs')
     datasets         = Dataset.objects.filter(private=False) | Dataset.objects.filter(user=user)
     aimodels         = AiModel.objects.filter(private=False) | AiModel.objects.filter(user=user)
     preprocess       = Preprocess.objects.filter(private=False) | Preprocess.objects.filter(user=user)

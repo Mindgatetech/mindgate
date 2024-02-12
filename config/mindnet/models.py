@@ -133,7 +133,7 @@ class Metric(models.Model):
 class PipeJob(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_pipejob')
     EVALUATION_OPT  = [('SI', 'Subject Independent'), ('SD', 'Subject Dependent')]
-    evaluation_type = models.CharField(choices=EVALUATION_OPT, default='standard_1020', max_length=2)
+    evaluation_type = models.CharField(choices=EVALUATION_OPT, default='SI', max_length=2)
     dataset         = models.ForeignKey('Dataset', on_delete=models.CASCADE, null=True)
     preprocess      = models.ForeignKey('Preprocess', on_delete=models.CASCADE, null=True)
     scaler          = models.ForeignKey('Scaler', on_delete=models.CASCADE, null=True)
