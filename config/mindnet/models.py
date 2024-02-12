@@ -150,12 +150,12 @@ class PipeJob(models.Model):
     filter          = models.CharField(choices=FILTER_OPT, default='Bandpass', max_length=20)
     low_band        = models.FloatField(default=8.0)
     high_band       = models.FloatField(default=35.0)
-    EPOCH_OPT       = [('E', 'Events'), ('F', 'Fixed Lenght')]
-    epoch_from      = models.CharField(max_length=2, choices=EPOCH_OPT, default='E')
+    EPOCH_OPT       = [('Events', 'Events'), ('Fixed Lenght', 'Fixed Lenght')]
+    epoch_from      = models.CharField(max_length=15, choices=EPOCH_OPT, default='Events')
     duration        = models.FloatField(default=4.0, blank=True)
     overlap         = models.FloatField(default=1.0, blank=True)
-    EVENT_OPT       = [('A', 'Annotations'), ('SC', 'Stim Channel')]
-    event_from      = models.CharField(max_length=2, choices=EVENT_OPT, default='Annotations')
+    EVENT_OPT       = [('Annotations', 'Annotations'), ('Stim Channel', 'Stim Channel')]
+    event_from      = models.CharField(max_length=15, choices=EVENT_OPT, default='Annotations')
     MISSING_OPT     = [('warn', 'warn'), ('ignore', 'Ignore'), ('raise', 'Raise')]
     on_missing      = models.CharField(max_length=12, choices=MISSING_OPT, default='warn')
     stim_channel       = models.CharField(max_length=100, blank=True)
@@ -171,7 +171,7 @@ class PipeJob(models.Model):
     results         = models.TextField(blank=True)
     trained_model   = models.FileField(blank=True, upload_to="models_trained")
     private         = models.BooleanField(default=False)
-    job_id          = models.CharField(max_length=33, blank=True)
+    job_id          = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -181,7 +181,9 @@ class PipeJob(models.Model):
 def job_processing(sender, instance, created, **kwargs):
     if created:
         model = instance
+        m     = instance
         opts = {
             'group': 'PipeJob Processing',
         }
-        async_task(views.pipjob_processing, model, q_options=opts)
+        uuid = async_task(views.pipjob_processing, model, q_options=opts)
+        

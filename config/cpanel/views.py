@@ -465,36 +465,12 @@ def pipejobs(request):
     
 @login_required
 def pipejob_details(request, id):
-    user = request.user
-    if request.method == 'POST':
-        if Scaler.objects.filter(user=user, pk=id).exists():     
-            scaler = Scaler.objects.get(user=user, pk=id)
-            scaler.name = request.POST.get('name')
-            scaler.description = request.POST.get('description')
-            related_paper_id = request.POST.get('related_paper_id')
-            scaler.private = bool(request.POST.get('private', False))
-            if len(request.FILES) != 0:
-                scaler.scaler = request.FILES['scalerfile']
-            scaler.related_paper.clear()
-            if Paper.objects.filter(pk=related_paper_id).exists():
-                paper = Paper.objects.filter(pk=related_paper_id)
-                scaler.related_paper.set(paper)
-            scaler.save()
-            # message
-            return redirect('/cpanel/scalers/mine')
-        # message you have not premission
-
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-
-    queryset = Scaler.objects.filter(user=user, pk=id) | Scaler.objects.filter(private=False, pk=id)
-    scaler  = get_object_or_404(queryset, pk=id)
-    papers = Paper.objects.filter(private=False) | Paper.objects.filter(user=user)
-    context  = { 'scaler': scaler,
-                 'papers' : papers,
-                   #dataset
+    user        = request.user
+    pipejob     = get_object_or_404(PipeJob, user=user, pk=id)
+    context     = {
+        'pipejob': pipejob 
                     }
-    return render(request, 'cpanel/scaler/details.html', context=context)
+    return render(request, 'cpanel/pipejob/details.html', context=context)
 
 @login_required()
 def pipejob_add(request):
