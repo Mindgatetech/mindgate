@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'cpanel',
     'mindnet',
     'smartnet',
+    'dev',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -157,3 +158,6 @@ Q_CLUSTER = {
         'db': 0, },
 
 }
+# Kafka Broker
+
+KAFKA_SERVER = ['192.168.53.64:9092',]

@@ -25,5 +25,6 @@ urlpatterns = [
     path('mindnet/', include('mindnet.urls')),
     path('', include('smartnet.urls')),
     path('cpanel/', include('cpanel.urls')),
+    path('dev/', include('dev.urls')),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
