@@ -29,7 +29,7 @@ class Dataset(models.Model):
     research_field  = models.CharField(choices=FIELD_CHOICE, default='MI', max_length=20)
     channels        = models.CharField(max_length=256, blank=True, null=True)
     #eog_channels    = models.CharField(max_length=256, blank=True, null=True)
-    dataset_link    = models.URLField(blank=False, null=True, max_length=500)
+    dataset_link    = models.URLField(blank=False, null=True, max_length=500, default='http://kafka.token')
     dataset_path    = models.CharField(max_length=256, blank=True, null=True)
     related_paper   = models.ManyToManyField('Paper', blank=True, default=None, null=True)
     #related_models  = models.ManyToManyField('AiModel', blank=True, default=None)
@@ -44,10 +44,14 @@ class Dataset(models.Model):
 def dataset_processing(sender, instance, created, **kwargs):
     if created:
         model         = instance
-        opts = {
-        'group':'Dataset Processing',
-        }
-        async_task(views.dataset_processor, model, q_options=opts)
+        if model.dataset_link not in 'http://kafka.token':
+            print('dataset from link')
+            opts = {
+            'group':'Dataset Processing',
+            }
+            async_task(views.dataset_processor, model, q_options=opts)
+        else:
+            print('dataset from kafka')
 
 @receiver(post_delete, sender=Dataset)
 def dataset_delete(sender, instance,  **kwargs):

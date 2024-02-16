@@ -13,7 +13,7 @@ def tokens(request):
         models.Token.objects.create(user=user, name=name, description=description, subject=subject)
         messages.success(request, 'Your request has been sent for making decisions')
         return redirect('tokens')
-    tokens  = get_list_or_404(models.Token, user=user)
+    tokens  = models.Token.objects.filter(user=user)
     subjects= models.Token.subject.field.choices
     context = {
         'tokens' : tokens,
