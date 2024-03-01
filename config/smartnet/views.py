@@ -19,6 +19,8 @@ from xgboost.sklearn import XGBClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 import importlib
 
+from django_q.tasks import async_task
+
 def result_converter(res):
     results = res
     import numpy as np
@@ -165,6 +167,7 @@ def hyperparameter_get(arg):
       tmp = item.split(":")
       hyperparameter[tmp[0]] = tmp[1]
     return hyperparameter
+
 def smartnet():
     print("Hello I'm Scheduled function")
     def read_raw_data(subject, path, eog, event_id, filter, freq, montage_type, timing, on_missing):
@@ -191,7 +194,7 @@ def smartnet():
         labels = epochs.events[:, -1] - event_id[0]
         group = [subject] * epochs_data.shape[0]
         return epochs_data, labels, group
-    value_list = mnm.Dataset.objects.filter(private=False).values_list(
+    value_list = mnm.Dataset.objects.filter(private=False, ready_to_use=True).values_list(
         'metadata', flat=True
     ).distinct()
     group_by_value = dict()
@@ -324,5 +327,9 @@ def smartnet():
     best_models_path = ','.join(bmp for bmp in best_models_path)
     models.Result.objects.create(result_id=result_id, results=str(results), best_models_path=best_models_path)
     return True
+def smartnet_http(request):
+    task_id = async_task(smartnet)
+    print(task_id)
+    return HttpResponse("Smartnet Called ...")
 def smartnet_hook(score_list):
     print("Hello I'm Scheduled Hook function")

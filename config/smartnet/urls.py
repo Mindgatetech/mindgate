@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 urlpatterns = [
-    path('', views.Scheduled_test),
+    path('', views.smartnet_http, name='smartnet'),
+    path('hook', views.smartnet_hook, name='smartnet_hook'),
     path('import', views.import_test),
-    path('hook', views.hook_test),
 ]
