@@ -30,6 +30,9 @@
       <thead>
         <tr class="bg-gray-2 text-left dark:bg-meta-4">
           <th class="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+            #
+          </th>
+          <th class="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
             Dataset
           </th>
           <th class="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white">
@@ -49,8 +52,13 @@
       </thead>
       <tbody>
         {% if pipejobs %}
+        <form action="{% url 'pipejob_compare' %}" method="POST" >
+          {% csrf_token %}
         {% for pipejob in pipejobs %}
         <tr>
+          <td class="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                <input type="checkbox" class="" name="jobs_selection[]" value="{{ pipejob.id }}" />
+          </td>
           <td class="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
             <h5 class="font-medium text-black dark:text-white">{{ pipejob.dataset.name }}</h5>
             <p class="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">{{ pipejob.preprocess.name }}</p>
@@ -75,7 +83,7 @@
           <td class="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
             <div class="flex items-center space-x-3.5">
               <a href="{% url 'pipejob_details' pipejob.id %}">
-              <button class="hover:text-primary">
+              <button class="hover:text-primary" type="button">
                 <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none"
                   xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -122,6 +130,14 @@
           </td>
         </tr>
         {% endfor %}
+        <tr class="w-full justify-center">
+          <td class="w-full justify-center">
+            <button class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray" type="submit">
+              Compare Results
+            </button>
+          </td>   
+        </tr>
+        </form>          
         {% endif %}
       </tbody>
     </table>

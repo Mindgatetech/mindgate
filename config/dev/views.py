@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponse
 from . import models
 
 @login_required
@@ -27,3 +28,10 @@ def token_delete(request, id):
     get_object_or_404(models.Token, user=user, pk=id).delete()
     messages.success(request, 'Your token has been deleted')
     return redirect('tokens')
+
+def auth_token(request):
+    if token:=request.GET.get('s'):
+        verfication = models.Token.objects.filter(secret=token).exists()
+        return HttpResponse(str(verfication))
+    else:
+        return HttpResponse('False')

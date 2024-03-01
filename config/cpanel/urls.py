@@ -42,4 +42,5 @@ urlpatterns = [
     path('pipejob/<int:id>', views.pipejob_details, name='pipejob_details'),
     path('pipejob/add', views.pipejob_add, name='pipejob_add'),
     path('pipejob/delete/<int:id>', views.pipejob_delete, name='pipejob_delete'),
+    path('pipejob/compare', views.pipejob_compare, name='pipejob_compare'),
 ]

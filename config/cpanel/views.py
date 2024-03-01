@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from . import models
 from mindnet.models import Paper, Dataset, AiModel, Preprocess, Metric, Scaler, ValidationTechnique, PipeJob
+import json
 
 @login_required()
 def dashboard(request):
@@ -475,7 +476,7 @@ def pipejob_details(request, id):
 @login_required()
 def pipejob_add(request):
     def validator(data):
-        if data is '':
+        if data == '':
             return -1.0
         return float(data)
     user = request.user
@@ -544,6 +545,70 @@ def pipejob_add(request):
               'filter':filter, 'epoch_from':epoch_from, 'event_from':event_from, 'on_missing':on_missing  
     }
     return render(request, 'cpanel/pipejob/add.html', context=context)
+
+@login_required()
+def pipejob_compare(request):
+    user = request.user
+    if request.method == 'POST':
+        jobs_selection = request.POST.getlist('jobs_selection[]')
+        if len(jobs_selection) > 0:
+            query = Q(pk=jobs_selection[0])
+            for pj in jobs_selection:
+                query.add(Q(pk=pj), Q.OR)
+            query.add(Q(status=True), Q.AND)
+            pipejobs = PipeJob.objects.filter(query)
+            if pipejobs.count() != len(jobs_selection):
+                messages.error(request, 'Jobs seems to be incompleted !')
+                return redirect('pipejobs')
+            metricList = list()
+            vtList     = list()
+            for job in pipejobs:
+                metricList.append(job.metric.name)
+                axilaryList= list(set(metricList))
+                metricList.pop()
+                metricList = axilaryList.copy()
+                vtList.append(job.validationtechnique.name)
+                axilaryList.clear()
+                axilaryList= list(set(vtList))
+                vtList.pop()
+                vtList = axilaryList.copy()
+            if len(vtList)>1 or len(metricList)>1:
+                messages.error(request, 'Metrics or Validation Tecniques are not same !')
+                return redirect('pipejobs')
+            context = {
+                'pipejobs': pipejobs,
+            }
+            data_dict = dict()
+            for pj in pipejobs:
+                data = list()
+                results = pj.results
+                results = results.replace('array(', "'")
+                results = results.replace(')', "'")
+                results = results.replace("'", "\"")
+                results = json.loads(results)
+                last_key = next(reversed(results.keys()))
+                results = results[last_key].replace("[", '')
+                results = results.replace("]", '')
+                results = results.split(',')
+                '''for i,item in enumerate(results):
+                    results[i] = float(item)'''
+                avg = 0 
+                for i, val in enumerate(results):
+                    data.append({"label": str(i+1), "y": float(val)})
+                    avg = avg + float(val)
+                print(i, avg)
+                data.append({"label": "AVG", "y": avg/(i+1) })
+                data_dict[str(pj.id)] = data
+                metric_name = last_key
+                
+            context = {
+                'data_dict' : data_dict,
+                'metric_name' : metric_name
+            }
+            return render(request, 'cpanel/pipejob/compare.html', context=context)
+        
+    messages.error(request, 'You have to select at least one choices')
+    return redirect('pipejobs')
 
 @login_required()
 def pipejob_delete(request, id):

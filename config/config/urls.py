@@ -23,8 +23,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('mindnet/', include('mindnet.urls')),
-    path('', include('smartnet.urls')),
+    path('smartnet/', include('smartnet.urls')),
     path('cpanel/', include('cpanel.urls')),
     path('dev/', include('dev.urls')),
+    path('', include(('general.urls'))),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

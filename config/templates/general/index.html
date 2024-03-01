@@ -1,0 +1,903 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Main | MindGate</title>
+    <link rel="icon" href="{% static 'img/icon/favicon.ico' %}">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body
+  x-data="{ page: 'main', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+  x-init="
+          darkMode = JSON.parse(localStorage.getItem('darkMode'));
+          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+  :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}">
+  <!-- ===== Preloader Start ===== -->
+  <div x-show="loaded" x-init="window.addEventListener('DOMContentLoaded', () => {setTimeout(() => loaded = false, 500)})"
+  class="fixed left-0 top-0 z-999999 flex h-screen w-screen items-center justify-center bg-white">
+  <div class="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
+</div>
+  <!-- ===== Preloader End ===== -->
+<!-- ===== Preloader Start ===== -->
+<header class="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
+  <div class="flex flex-grow items-center justify-between py-4 px-4 shadow-2 md:px-6 2xl:px-11">
+    <div class="flex items-center gap-2 sm:gap-4 lg:hidden">
+      <!-- Hamburger Toggle BTN -->
+      <button
+        class="z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
+        @click.stop="sidebarToggle = !sidebarToggle">
+        <span class="relative block h-5.5 w-5.5 cursor-pointer">
+          <span class="du-block absolute right-0 h-full w-full">
+            <span
+              class="relative top-0 left-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-[0] duration-200 ease-in-out dark:bg-white"
+              :class="{ '!w-full delay-300': !sidebarToggle }"></span>
+            <span
+              class="relative top-0 left-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-150 duration-200 ease-in-out dark:bg-white"
+              :class="{ '!w-full delay-400': !sidebarToggle }"></span>
+            <span
+              class="relative top-0 left-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-200 duration-200 ease-in-out dark:bg-white"
+              :class="{ '!w-full delay-500': !sidebarToggle }"></span>
+          </span>
+          <span class="du-block absolute right-0 h-full w-full rotate-45">
+            <span
+              class="absolute left-2.5 top-0 block h-full w-0.5 rounded-sm bg-black delay-300 duration-200 ease-in-out dark:bg-white"
+              :class="{ '!h-0 delay-[0]': !sidebarToggle }"></span>
+            <span
+              class="delay-400 absolute left-0 top-2.5 block h-0.5 w-full rounded-sm bg-black duration-200 ease-in-out dark:bg-white"
+              :class="{ '!h-0 dealy-200': !sidebarToggle }"></span>
+          </span>
+        </span>
+      </button>
+      <!-- Hamburger Toggle BTN -->
+      <a class="block flex-shrink-0  sm:hidden" href="index.html">
+        <img src="{% static 'img/logo/logo-mini.svg' %}" alt="Logo" width="30" height="30" />
+      </a>
+    </div>
+
+    <div class="!visible hidden flex-grow items-center lg:!flex lg:basis-auto gap-3">
+      <!-- Logo -->
+      <a
+        class=""
+        href="#">
+        <img class="hidden dark:block" src="{% static 'img/logo/logo.svg' %}" alt="Logo" width="180" height="25" />
+        <img class="dark:hidden" src="{% static 'img/logo/logo-black.svg' %}" alt="Logo" width="180" height="25" />
+      </a>
+
+      <ul
+        class="list-style-none mr-auto flex flex-col pl-0 lg:flex-row font-bold text-black dark:text-white"
+        data-te-navbar-nav-ref>
+        <li class="mb-4 lg:mb-0 lg:pr-2" data-te-nav-item-ref>
+          <!-- Dashboard link -->
+          <a
+            class="text-neutral-500 duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+            href="{% url 'login' %}"
+            data-te-nav-link-ref
+            >Dashboard</a
+          >
+        </li>
+        <!-- Team link -->
+        <li class="mb-4 lg:mb-0 lg:pr-2" data-te-nav-item-ref>
+          <a
+            class="text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
+            href="#"
+            data-te-nav-link-ref
+            >Team</a
+          >
+        </li>
+        <!-- Projects link -->
+        <li class="mb-4 lg:mb-0 lg:pr-2" data-te-nav-item-ref>
+          <a
+            class="text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
+            href="#"
+            data-te-nav-link-ref
+            >Projects</a
+          >
+        </li>
+      </ul>
+    </div>
+    <div class="flex items-center gap-3 2xsm:gap-7">
+      <ul class="flex items-center gap-2 2xsm:gap-4">
+        <li>
+          <!-- Dark Mode Toggler -->
+          <label :class="darkMode ? 'bg-primary' : 'bg-stroke'" class="relative m-0 block h-7.5 w-14 rounded-full">
+            <input type="checkbox" :value="darkMode" @change="darkMode = !darkMode"
+              class="absolute top-0 z-50 m-0 h-full w-full cursor-pointer opacity-0" />
+            <span :class="darkMode && '!right-[3px] !translate-x-full'"
+              class="absolute top-1/2 left-[3px] flex h-6 w-6 -translate-y-1/2 translate-x-0 items-center justify-center rounded-full bg-white shadow-switcher duration-75 ease-linear">
+              <span class="dark:hidden">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M7.99992 12.6666C10.5772 12.6666 12.6666 10.5772 12.6666 7.99992C12.6666 5.42259 10.5772 3.33325 7.99992 3.33325C5.42259 3.33325 3.33325 5.42259 3.33325 7.99992C3.33325 10.5772 5.42259 12.6666 7.99992 12.6666Z"
+                    fill="#969AA1" />
+                  <path
+                    d="M8.00008 15.3067C7.63341 15.3067 7.33342 15.0334 7.33342 14.6667V14.6134C7.33342 14.2467 7.63341 13.9467 8.00008 13.9467C8.36675 13.9467 8.66675 14.2467 8.66675 14.6134C8.66675 14.9801 8.36675 15.3067 8.00008 15.3067ZM12.7601 13.4267C12.5867 13.4267 12.4201 13.3601 12.2867 13.2334L12.2001 13.1467C11.9401 12.8867 11.9401 12.4667 12.2001 12.2067C12.4601 11.9467 12.8801 11.9467 13.1401 12.2067L13.2267 12.2934C13.4867 12.5534 13.4867 12.9734 13.2267 13.2334C13.1001 13.3601 12.9334 13.4267 12.7601 13.4267ZM3.24008 13.4267C3.06675 13.4267 2.90008 13.3601 2.76675 13.2334C2.50675 12.9734 2.50675 12.5534 2.76675 12.2934L2.85342 12.2067C3.11342 11.9467 3.53341 11.9467 3.79341 12.2067C4.05341 12.4667 4.05341 12.8867 3.79341 13.1467L3.70675 13.2334C3.58008 13.3601 3.40675 13.4267 3.24008 13.4267ZM14.6667 8.66675H14.6134C14.2467 8.66675 13.9467 8.36675 13.9467 8.00008C13.9467 7.63341 14.2467 7.33342 14.6134 7.33342C14.9801 7.33342 15.3067 7.63341 15.3067 8.00008C15.3067 8.36675 15.0334 8.66675 14.6667 8.66675ZM1.38675 8.66675H1.33341C0.966748 8.66675 0.666748 8.36675 0.666748 8.00008C0.666748 7.63341 0.966748 7.33342 1.33341 7.33342C1.70008 7.33342 2.02675 7.63341 2.02675 8.00008C2.02675 8.36675 1.75341 8.66675 1.38675 8.66675ZM12.6734 3.99341C12.5001 3.99341 12.3334 3.92675 12.2001 3.80008C11.9401 3.54008 11.9401 3.12008 12.2001 2.86008L12.2867 2.77341C12.5467 2.51341 12.9667 2.51341 13.2267 2.77341C13.4867 3.03341 13.4867 3.45341 13.2267 3.71341L13.1401 3.80008C13.0134 3.92675 12.8467 3.99341 12.6734 3.99341ZM3.32675 3.99341C3.15341 3.99341 2.98675 3.92675 2.85342 3.80008L2.76675 3.70675C2.50675 3.44675 2.50675 3.02675 2.76675 2.76675C3.02675 2.50675 3.44675 2.50675 3.70675 2.76675L3.79341 2.85342C4.05341 3.11342 4.05341 3.53341 3.79341 3.79341C3.66675 3.92675 3.49341 3.99341 3.32675 3.99341ZM8.00008 2.02675C7.63341 2.02675 7.33342 1.75341 7.33342 1.38675V1.33341C7.33342 0.966748 7.63341 0.666748 8.00008 0.666748C8.36675 0.666748 8.66675 0.966748 8.66675 1.33341C8.66675 1.70008 8.36675 2.02675 8.00008 2.02675Z"
+                    fill="#969AA1" />
+                </svg>
+              </span>
+              <span class="hidden dark:inline-block">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M14.3533 10.62C14.2466 10.44 13.9466 10.16 13.1999 10.2933C12.7866 10.3667 12.3666 10.4 11.9466 10.38C10.3933 10.3133 8.98659 9.6 8.00659 8.5C7.13993 7.53333 6.60659 6.27333 6.59993 4.91333C6.59993 4.15333 6.74659 3.42 7.04659 2.72666C7.33993 2.05333 7.13326 1.7 6.98659 1.55333C6.83326 1.4 6.47326 1.18666 5.76659 1.48C3.03993 2.62666 1.35326 5.36 1.55326 8.28666C1.75326 11.04 3.68659 13.3933 6.24659 14.28C6.85993 14.4933 7.50659 14.62 8.17326 14.6467C8.27993 14.6533 8.38659 14.66 8.49326 14.66C10.7266 14.66 12.8199 13.6067 14.1399 11.8133C14.5866 11.1933 14.4666 10.8 14.3533 10.62Z"
+                    fill="#969AA1" />
+                </svg>
+              </span>
+            </span>
+          </label>
+          <!-- Dark Mode Toggler -->
+        </li>
+
+
+      </ul>
+
+
+    </div>
+  </div>
+</header>
+<!-- ===== Preloader End ===== -->
+
+      <!-- ===== Main Content Start ===== -->
+      <main>
+        <!-- Container -->
+        <div class="mx-auto max-w-screen-2xl items-center" style="background-image: url({% static 'img/main/background.jpg' %});" >
+
+<div class="relative flex flex-col items-center mx-auto lg:flex-row-reverse lg:max-w-5xl mt-0 xl:max-w-6xl">
+
+    <!-- Image Column -->
+    <div class="w-full h-64 lg:w-1/2 lg:h-auto">
+        <img class="h-full w-full object-cover" src="{% static 'img/main/hero.jpg' %}" alt="Winding mountain road">
+    </div>
+    <!-- Close Image Column -->
+
+    <!-- Text Column -->
+    <div
+        class="max-w-lg bg-black md:max-w-2xl md:z-10 md:shadow-lg md:absolute md:top-0 md:mt-48 lg:w-3/5 lg:left-0 lg:mt-20 lg:ml-20 xl:mt-24 xl:ml-12">
+        <!-- Text Wrapper -->
+        <div class="flex flex-col p-12 md:px-16 mb-2">
+          <a
+        class=""
+        href="#">
+        <img src="{% static 'img/logo/logo.svg' %}" alt="Logo" width="200" height="50" />
+          </a>
+            <h2 class="text-2xl font-medium uppercase text-white lg:text-4xl mt-4"></h2>
+            <p class="mt-4 text-white">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat.
+            </p>
+            <!-- Button Container -->
+            <div class="mt-8">
+                <a href="index.html"
+                    class="inline-flex items-center justify-center rounded-md border border-meta-3 py-3 px-5 text-center font-medium text-meta-3 hover:text-white hover:bg-meta-3 hover:bg-opacity-90 lg:px-8 xl:px-10">
+                    More...</a>
+            </div>
+        </div>
+        <!-- Close Text Wrapper -->
+    </div>
+    <!-- Close Text Column -->
+
+</div>
+<div id="about"></div>
+   <!-- SECtion 2 -->
+          <!-- container p-4 md:p-6 2xl:p-10-->
+          <div class="bg-black bg-opacity-70 dark:bg-opacity-70 dark:bg-white p-5 m-0 mt-2 text-center">
+            <h2 class="text-4xl font-bold text-white bg-black dark:bg-white dark:text-black p-3 mb-2">About us</h2>
+          <div class="flex flex-col gap-2 sm:flex-row items-center justify-between">
+            <!-- 1st -->
+              <div class="p-5 border rounded text-center text-black max-w-sm bg-white dark:bg-black dark:text-white">
+            <img class="w-32 h-32 rounded-full mx-auto" src="{% static 'img/user/Zali.jpeg' %}" alt="">
+            <div class="text-sm mt-5">
+                <a href="#"
+                    class="font-medium leading-none text-gray-900 hover:text-indigo-600 transition duration-500 ease-in-out">
+                    Dr. Zeinab Zali
+                </a>
+                <p>Associated Professor</p>
+            </div>
+
+            <p class="mt-2 text-sm text-gray-900">Lorem ipsum dolor sit amet, consecte adipisicing elit. Voluptatibus quia
+                Maiores et perferendis eaque.</p>
+
+            <div class="flex mt-4 justify-center">
+                <a href="#" class="w-6 mx-1">
+                    <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                        viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                        style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                        <path id="Twitter" d="M24,12c0,6.627 -5.373,12 -12,12c-6.627,0 -12,-5.373 -12,-12c0,-6.627
+                          5.373,-12 12,-12c6.627,0 12,5.373 12,12Zm-6.465,-3.192c-0.379,0.168
+                          -0.786,0.281 -1.213,0.333c0.436,-0.262 0.771,-0.676
+                          0.929,-1.169c-0.408,0.242 -0.86,0.418 -1.341,0.513c-0.385,-0.411
+                          -0.934,-0.667 -1.541,-0.667c-1.167,0 -2.112,0.945 -2.112,2.111c0,0.166
+                          0.018,0.327 0.054,0.482c-1.754,-0.088 -3.31,-0.929
+                          -4.352,-2.206c-0.181,0.311 -0.286,0.674 -0.286,1.061c0,0.733 0.373,1.379
+                          0.94,1.757c-0.346,-0.01 -0.672,-0.106 -0.956,-0.264c-0.001,0.009
+                          -0.001,0.018 -0.001,0.027c0,1.023 0.728,1.877 1.694,2.07c-0.177,0.049
+                          -0.364,0.075 -0.556,0.075c-0.137,0 -0.269,-0.014 -0.397,-0.038c0.268,0.838
+                          1.048,1.449 1.972,1.466c-0.723,0.566 -1.633,0.904 -2.622,0.904c-0.171,0
+                          -0.339,-0.01 -0.504,-0.03c0.934,0.599 2.044,0.949 3.237,0.949c3.883,0
+                          6.007,-3.217 6.007,-6.008c0,-0.091 -0.002,-0.183 -0.006,-0.273c0.413,-0.298
+                          0.771,-0.67 1.054,-1.093Z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="w-6 mx-1">
+                    <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                        viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                        style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                        <path id="Facebook" d="M24,12c0,6.627 -5.373,12 -12,12c-6.627,0 -12,-5.373 -12,-12c0,-6.627
+                          5.373,-12 12,-12c6.627,0 12,5.373
+                          12,12Zm-11.278,0l1.294,0l0.172,-1.617l-1.466,0l0.002,-0.808c0,-0.422
+                          0.04,-0.648 0.646,-0.648l0.809,0l0,-1.616l-1.295,0c-1.555,0 -2.103,0.784
+                          -2.103,2.102l0,0.97l-0.969,0l0,1.617l0.969,0l0,4.689l1.941,0l0,-4.689Z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="w-6 mx-1">
+                    <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                        viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                        style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                        <path id="Shape" d="M7.3,0.9c1.5,-0.6 3.1,-0.9 4.7,-0.9c1.6,0 3.2,0.3 4.7,0.9c1.5,0.6 2.8,1.5
+                          3.8,2.6c1,1.1 1.9,2.3 2.6,3.8c0.7,1.5 0.9,3 0.9,4.7c0,1.7 -0.3,3.2
+                          -0.9,4.7c-0.6,1.5 -1.5,2.8 -2.6,3.8c-1.1,1 -2.3,1.9 -3.8,2.6c-1.5,0.7
+                          -3.1,0.9 -4.7,0.9c-1.6,0 -3.2,-0.3 -4.7,-0.9c-1.5,-0.6 -2.8,-1.5
+                          -3.8,-2.6c-1,-1.1 -1.9,-2.3 -2.6,-3.8c-0.7,-1.5 -0.9,-3.1 -0.9,-4.7c0,-1.6
+                          0.3,-3.2 0.9,-4.7c0.6,-1.5 1.5,-2.8 2.6,-3.8c1.1,-1 2.3,-1.9
+                          3.8,-2.6Zm-0.3,7.1c0.6,0 1.1,-0.2 1.5,-0.5c0.4,-0.3 0.5,-0.8 0.5,-1.3c0,-0.5
+                          -0.2,-0.9 -0.6,-1.2c-0.4,-0.3 -0.8,-0.5 -1.4,-0.5c-0.6,0 -1.1,0.2
+                          -1.4,0.5c-0.3,0.3 -0.6,0.7 -0.6,1.2c0,0.5 0.2,0.9 0.5,1.3c0.3,0.4 0.9,0.5
+                          1.5,0.5Zm1.5,10l0,-8.5l-3,0l0,8.5l3,0Zm11,0l0,-4.5c0,-1.4 -0.3,-2.5
+                          -0.9,-3.3c-0.6,-0.8 -1.5,-1.2 -2.6,-1.2c-0.6,0 -1.1,0.2 -1.5,0.5c-0.4,0.3
+                          -0.8,0.8 -0.9,1.3l-0.1,-1.3l-3,0l0.1,2l0,6.5l3,0l0,-4.5c0,-0.6 0.1,-1.1
+                          0.4,-1.5c0.3,-0.4 0.6,-0.5 1.1,-0.5c0.5,0 0.9,0.2 1.1,0.5c0.2,0.3 0.4,0.8
+                          0.4,1.5l0,4.5l2.9,0Z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="w-6 mx-1">
+                    <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                        viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                        style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                        <path id="Combined-Shape" d="M12,24c6.627,0 12,-5.373 12,-12c0,-6.627 -5.373,-12 -12,-12c-6.627,0
+                          -12,5.373 -12,12c0,6.627 5.373,12 12,12Zm6.591,-15.556l-0.722,0c-0.189,0
+                          -0.681,0.208 -0.681,0.385l0,6.422c0,0.178 0.492,0.323
+                          0.681,0.323l0.722,0l0,1.426l-4.675,0l0,-1.426l0.935,0l0,-6.655l-0.163,0l-2.251,8.081l-1.742,0l-2.222,-8.081l-0.168,0l0,6.655l0.935,0l0,1.426l-3.74,0l0,-1.426l0.519,0c0.203,0
+                          0.416,-0.145 0.416,-0.323l0,-6.422c0,-0.177 -0.213,-0.385
+                          -0.416,-0.385l-0.519,0l0,-1.426l4.847,0l1.583,5.704l0.042,0l1.598,-5.704l5.021,0l0,1.426Z"></path>
+                    </svg>
+                </a>
+            </div>
+
+          </div>
+          <!-- 2nd-->
+                          <div class="p-5 border rounded text-center text-black max-w-sm bg-white dark:bg-black dark:text-white">
+              <img class="w-32 h-32 rounded-full mx-auto" src="{% static 'img/user/Baghban.jpeg' %}" alt="">
+              <div class="text-sm mt-5">
+                  <a href="#"
+                      class="font-medium leading-none text-gray-900 hover:text-indigo-600 transition duration-500 ease-in-out">
+                      Ali Baghban
+                  </a>
+                  <p>...</p>
+              </div>
+
+              <p class="mt-2 text-sm text-gray-900">Lorem ipsum dolor sit amet, consecte adipisicing elit. Voluptatibus quia
+                  Maiores et perferendis eaque.</p>
+
+              <div class="flex mt-4 justify-center">
+                  <a href="#" class="w-6 mx-1">
+                      <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                          viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                          style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                          <path id="Twitter" d="M24,12c0,6.627 -5.373,12 -12,12c-6.627,0 -12,-5.373 -12,-12c0,-6.627
+                            5.373,-12 12,-12c6.627,0 12,5.373 12,12Zm-6.465,-3.192c-0.379,0.168
+                            -0.786,0.281 -1.213,0.333c0.436,-0.262 0.771,-0.676
+                            0.929,-1.169c-0.408,0.242 -0.86,0.418 -1.341,0.513c-0.385,-0.411
+                            -0.934,-0.667 -1.541,-0.667c-1.167,0 -2.112,0.945 -2.112,2.111c0,0.166
+                            0.018,0.327 0.054,0.482c-1.754,-0.088 -3.31,-0.929
+                            -4.352,-2.206c-0.181,0.311 -0.286,0.674 -0.286,1.061c0,0.733 0.373,1.379
+                            0.94,1.757c-0.346,-0.01 -0.672,-0.106 -0.956,-0.264c-0.001,0.009
+                            -0.001,0.018 -0.001,0.027c0,1.023 0.728,1.877 1.694,2.07c-0.177,0.049
+                            -0.364,0.075 -0.556,0.075c-0.137,0 -0.269,-0.014 -0.397,-0.038c0.268,0.838
+                            1.048,1.449 1.972,1.466c-0.723,0.566 -1.633,0.904 -2.622,0.904c-0.171,0
+                            -0.339,-0.01 -0.504,-0.03c0.934,0.599 2.044,0.949 3.237,0.949c3.883,0
+                            6.007,-3.217 6.007,-6.008c0,-0.091 -0.002,-0.183 -0.006,-0.273c0.413,-0.298
+                            0.771,-0.67 1.054,-1.093Z"></path>
+                      </svg>
+                  </a>
+                  <a href="#" class="w-6 mx-1">
+                      <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                          viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                          style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                          <path id="Facebook" d="M24,12c0,6.627 -5.373,12 -12,12c-6.627,0 -12,-5.373 -12,-12c0,-6.627
+                            5.373,-12 12,-12c6.627,0 12,5.373
+                            12,12Zm-11.278,0l1.294,0l0.172,-1.617l-1.466,0l0.002,-0.808c0,-0.422
+                            0.04,-0.648 0.646,-0.648l0.809,0l0,-1.616l-1.295,0c-1.555,0 -2.103,0.784
+                            -2.103,2.102l0,0.97l-0.969,0l0,1.617l0.969,0l0,4.689l1.941,0l0,-4.689Z"></path>
+                      </svg>
+                  </a>
+
+                  <a href="#" class="w-6 mx-1">
+                      <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                          viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                          style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                          <path id="Shape" d="M7.3,0.9c1.5,-0.6 3.1,-0.9 4.7,-0.9c1.6,0 3.2,0.3 4.7,0.9c1.5,0.6 2.8,1.5
+                            3.8,2.6c1,1.1 1.9,2.3 2.6,3.8c0.7,1.5 0.9,3 0.9,4.7c0,1.7 -0.3,3.2
+                            -0.9,4.7c-0.6,1.5 -1.5,2.8 -2.6,3.8c-1.1,1 -2.3,1.9 -3.8,2.6c-1.5,0.7
+                            -3.1,0.9 -4.7,0.9c-1.6,0 -3.2,-0.3 -4.7,-0.9c-1.5,-0.6 -2.8,-1.5
+                            -3.8,-2.6c-1,-1.1 -1.9,-2.3 -2.6,-3.8c-0.7,-1.5 -0.9,-3.1 -0.9,-4.7c0,-1.6
+                            0.3,-3.2 0.9,-4.7c0.6,-1.5 1.5,-2.8 2.6,-3.8c1.1,-1 2.3,-1.9
+                            3.8,-2.6Zm-0.3,7.1c0.6,0 1.1,-0.2 1.5,-0.5c0.4,-0.3 0.5,-0.8 0.5,-1.3c0,-0.5
+                            -0.2,-0.9 -0.6,-1.2c-0.4,-0.3 -0.8,-0.5 -1.4,-0.5c-0.6,0 -1.1,0.2
+                            -1.4,0.5c-0.3,0.3 -0.6,0.7 -0.6,1.2c0,0.5 0.2,0.9 0.5,1.3c0.3,0.4 0.9,0.5
+                            1.5,0.5Zm1.5,10l0,-8.5l-3,0l0,8.5l3,0Zm11,0l0,-4.5c0,-1.4 -0.3,-2.5
+                            -0.9,-3.3c-0.6,-0.8 -1.5,-1.2 -2.6,-1.2c-0.6,0 -1.1,0.2 -1.5,0.5c-0.4,0.3
+                            -0.8,0.8 -0.9,1.3l-0.1,-1.3l-3,0l0.1,2l0,6.5l3,0l0,-4.5c0,-0.6 0.1,-1.1
+                            0.4,-1.5c0.3,-0.4 0.6,-0.5 1.1,-0.5c0.5,0 0.9,0.2 1.1,0.5c0.2,0.3 0.4,0.8
+                            0.4,1.5l0,4.5l2.9,0Z"></path>
+                      </svg>
+                  </a>
+                  <a href="#" class="w-6 mx-1">
+                      <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                          viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                          style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                          <path id="Combined-Shape" d="M12,24c6.627,0 12,-5.373 12,-12c0,-6.627 -5.373,-12 -12,-12c-6.627,0
+                            -12,5.373 -12,12c0,6.627 5.373,12 12,12Zm6.591,-15.556l-0.722,0c-0.189,0
+                            -0.681,0.208 -0.681,0.385l0,6.422c0,0.178 0.492,0.323
+                            0.681,0.323l0.722,0l0,1.426l-4.675,0l0,-1.426l0.935,0l0,-6.655l-0.163,0l-2.251,8.081l-1.742,0l-2.222,-8.081l-0.168,0l0,6.655l0.935,0l0,1.426l-3.74,0l0,-1.426l0.519,0c0.203,0
+                            0.416,-0.145 0.416,-0.323l0,-6.422c0,-0.177 -0.213,-0.385
+                            -0.416,-0.385l-0.519,0l0,-1.426l4.847,0l1.583,5.704l0.042,0l1.598,-5.704l5.021,0l0,1.426Z"></path>
+                      </svg>
+                  </a>
+              </div>
+
+            </div>
+
+        <!-- 3rd -->
+        <div class="p-5 border rounded text-center text-black max-w-sm bg-white dark:bg-black dark:text-white">
+          <img class="w-32 h-32 rounded-full mx-auto" src="{% static 'img/user/Shayegh.jpeg' %}" alt="">
+          <div class="text-sm mt-5">
+              <a href="#"
+                  class="font-medium leading-none text-gray-900 hover:text-indigo-600 transition duration-500 ease-in-out">
+                  Dr. Farzaneh Shayegh
+              </a>
+              <p>Associated Professor</p>
+          </div>
+
+          <p class="mt-2 text-sm text-gray-900">Lorem ipsum dolor sit amet, consecte adipisicing elit. Voluptatibus quia
+              Maiores et perferendis eaque.</p>
+
+          <div class="flex mt-4 justify-center">
+              <a href="#" class="w-6 mx-1">
+                  <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                      viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                      style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                      <path id="Twitter" d="M24,12c0,6.627 -5.373,12 -12,12c-6.627,0 -12,-5.373 -12,-12c0,-6.627
+                        5.373,-12 12,-12c6.627,0 12,5.373 12,12Zm-6.465,-3.192c-0.379,0.168
+                        -0.786,0.281 -1.213,0.333c0.436,-0.262 0.771,-0.676
+                        0.929,-1.169c-0.408,0.242 -0.86,0.418 -1.341,0.513c-0.385,-0.411
+                        -0.934,-0.667 -1.541,-0.667c-1.167,0 -2.112,0.945 -2.112,2.111c0,0.166
+                        0.018,0.327 0.054,0.482c-1.754,-0.088 -3.31,-0.929
+                        -4.352,-2.206c-0.181,0.311 -0.286,0.674 -0.286,1.061c0,0.733 0.373,1.379
+                        0.94,1.757c-0.346,-0.01 -0.672,-0.106 -0.956,-0.264c-0.001,0.009
+                        -0.001,0.018 -0.001,0.027c0,1.023 0.728,1.877 1.694,2.07c-0.177,0.049
+                        -0.364,0.075 -0.556,0.075c-0.137,0 -0.269,-0.014 -0.397,-0.038c0.268,0.838
+                        1.048,1.449 1.972,1.466c-0.723,0.566 -1.633,0.904 -2.622,0.904c-0.171,0
+                        -0.339,-0.01 -0.504,-0.03c0.934,0.599 2.044,0.949 3.237,0.949c3.883,0
+                        6.007,-3.217 6.007,-6.008c0,-0.091 -0.002,-0.183 -0.006,-0.273c0.413,-0.298
+                        0.771,-0.67 1.054,-1.093Z"></path>
+                  </svg>
+              </a>
+              <a href="#" class="w-6 mx-1">
+                  <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                      viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                      style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                      <path id="Facebook" d="M24,12c0,6.627 -5.373,12 -12,12c-6.627,0 -12,-5.373 -12,-12c0,-6.627
+                        5.373,-12 12,-12c6.627,0 12,5.373
+                        12,12Zm-11.278,0l1.294,0l0.172,-1.617l-1.466,0l0.002,-0.808c0,-0.422
+                        0.04,-0.648 0.646,-0.648l0.809,0l0,-1.616l-1.295,0c-1.555,0 -2.103,0.784
+                        -2.103,2.102l0,0.97l-0.969,0l0,1.617l0.969,0l0,4.689l1.941,0l0,-4.689Z"></path>
+                  </svg>
+              </a>
+              <a href="#" class="w-6 mx-1">
+                  <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                      viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                      style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                      <path id="Shape" d="M7.3,0.9c1.5,-0.6 3.1,-0.9 4.7,-0.9c1.6,0 3.2,0.3 4.7,0.9c1.5,0.6 2.8,1.5
+                        3.8,2.6c1,1.1 1.9,2.3 2.6,3.8c0.7,1.5 0.9,3 0.9,4.7c0,1.7 -0.3,3.2
+                        -0.9,4.7c-0.6,1.5 -1.5,2.8 -2.6,3.8c-1.1,1 -2.3,1.9 -3.8,2.6c-1.5,0.7
+                        -3.1,0.9 -4.7,0.9c-1.6,0 -3.2,-0.3 -4.7,-0.9c-1.5,-0.6 -2.8,-1.5
+                        -3.8,-2.6c-1,-1.1 -1.9,-2.3 -2.6,-3.8c-0.7,-1.5 -0.9,-3.1 -0.9,-4.7c0,-1.6
+                        0.3,-3.2 0.9,-4.7c0.6,-1.5 1.5,-2.8 2.6,-3.8c1.1,-1 2.3,-1.9
+                        3.8,-2.6Zm-0.3,7.1c0.6,0 1.1,-0.2 1.5,-0.5c0.4,-0.3 0.5,-0.8 0.5,-1.3c0,-0.5
+                        -0.2,-0.9 -0.6,-1.2c-0.4,-0.3 -0.8,-0.5 -1.4,-0.5c-0.6,0 -1.1,0.2
+                        -1.4,0.5c-0.3,0.3 -0.6,0.7 -0.6,1.2c0,0.5 0.2,0.9 0.5,1.3c0.3,0.4 0.9,0.5
+                        1.5,0.5Zm1.5,10l0,-8.5l-3,0l0,8.5l3,0Zm11,0l0,-4.5c0,-1.4 -0.3,-2.5
+                        -0.9,-3.3c-0.6,-0.8 -1.5,-1.2 -2.6,-1.2c-0.6,0 -1.1,0.2 -1.5,0.5c-0.4,0.3
+                        -0.8,0.8 -0.9,1.3l-0.1,-1.3l-3,0l0.1,2l0,6.5l3,0l0,-4.5c0,-0.6 0.1,-1.1
+                        0.4,-1.5c0.3,-0.4 0.6,-0.5 1.1,-0.5c0.5,0 0.9,0.2 1.1,0.5c0.2,0.3 0.4,0.8
+                        0.4,1.5l0,4.5l2.9,0Z"></path>
+                  </svg>
+              </a>
+              <a href="#" class="w-6 mx-1">
+                  <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                      viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                      style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                      <path id="Combined-Shape" d="M12,24c6.627,0 12,-5.373 12,-12c0,-6.627 -5.373,-12 -12,-12c-6.627,0
+                        -12,5.373 -12,12c0,6.627 5.373,12 12,12Zm6.591,-15.556l-0.722,0c-0.189,0
+                        -0.681,0.208 -0.681,0.385l0,6.422c0,0.178 0.492,0.323
+                        0.681,0.323l0.722,0l0,1.426l-4.675,0l0,-1.426l0.935,0l0,-6.655l-0.163,0l-2.251,8.081l-1.742,0l-2.222,-8.081l-0.168,0l0,6.655l0.935,0l0,1.426l-3.74,0l0,-1.426l0.519,0c0.203,0
+                        0.416,-0.145 0.416,-0.323l0,-6.422c0,-0.177 -0.213,-0.385
+                        -0.416,-0.385l-0.519,0l0,-1.426l4.847,0l1.583,5.704l0.042,0l1.598,-5.704l5.021,0l0,1.426Z"></path>
+                  </svg>
+              </a>
+          </div>
+
+        </div>
+          </div>
+          </div>
+          <!-- end container -->
+<div id="goal"></div>
+          <!-- container p-4 md:p-6 2xl:p-10-->
+          <div class="bg-black bg-opacity-70 dark:bg-opacity-70 dark:bg-white p-5 m-0 mt-2 text-center">
+            <h2 class="text-4xl text-white font-bold bg-black dark:bg-white dark:text-black p-3 mb-2">Our Goal</h2>
+            <div class="flex flex-col gap-2 sm:flex-row items-center justify-between">
+
+
+                <blockquote class="relative grid items-center bg-white shadow-xl md:grid-cols-3 rounded-xl bg-white dark:bg-black text-black dark:text-white">
+
+                    <img class="hidden object-cover w-full h-full rounded-l-xl md:block" style="clip-path: polygon(0 0%, 100% 0%, 75% 100%, 0% 100%);" src="https://img.freepik.com/free-photo/male-radiologist-analyzing-mri-scan-results-patient-computer-monitor-control-room_637285-5158.jpg?w=740&t=st=1699953743~exp=1699954343~hmac=2bed796bc6281d7d02601c8d7eef24ec4cb9a189529090a23f45d19f1bc09b4c">
+
+                    <article class="relative p-6 md:p-8 md:col-span-2">
+                        <div class="space-y-8">
+                            <p class="text-base sm:leading-relaxed md:text-2xl">
+                                Hi, I'm Ali Baghban. I'm a 26-year-old software engineer with a passion for creating innovative solutions.
+                                I graduated with a degree in Computer Science from a prestigious university and have been working in
+                                the tech industry for over a decade. Throughout my career, I have gained extensive experience in
+                                programming languages like Python, Java, and C++. I thrive in challenging environments and enjoy
+                                collaborating with teams to develop cutting-edge software applications.
+                            </p>
+
+                            <footer class="flex items-center space-x-4 md:space-x-0">
+                                <img class="w-12 h-12 rounded-full md:hidden" src="{% static 'img/logo/logo-mini.svg' %}">
+                                <span class="font-bold text-lg">Ali Baghban</span>
+                            </footer>
+                        </div>
+                    </article>
+
+
+
+
+
+            </div>
+            </div>
+            <!-- end container -->
+
+        <!-- comments -->
+          <!-- container p-4 md:p-6 2xl:p-10-->
+          <div class="bg-black bg-opacity-70 dark:bg-opacity-70 dark:bg-white p-5 m-0 mt-2 text-center">
+
+            <h2 class="text-4xl font-bold text-white bg-black dark:bg-white dark:text-black p-3 mb-2">Comments</h2>
+        <section id="testimonies" class="py-5 bg-slate-900">
+            <div class="max-w-6xl mx-8 md:mx-10 lg:mx-20 xl:mx-auto">
+
+
+
+
+
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+
+
+                    <ul class="space-y-8">
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/kanyewest" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1276461929934942210/cqNhNk6v_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Kanye West">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Kanye West</h3>
+                                                <p class="text-gray-500 text-md">Rapper &amp; Entrepreneur</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Find God.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/tim_cook" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1535420431766671360/Pwq-1eJc_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Tim Cook">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Tim Cook</h3>
+                                                <p class="text-gray-500 text-md">CEO of Apple</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Diam quis enim lobortis scelerisque
+                                            fermentum dui faucibus in ornare. Donec pretium vulputate sapien nec sagittis
+                                            aliquam malesuada bibendum.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/kanyewest" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1276461929934942210/cqNhNk6v_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Kanye West">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Kanye West</h3>
+                                                <p class="text-gray-500 text-md">Rapper &amp; Entrepreneur</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Find God.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/tim_cook" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1535420431766671360/Pwq-1eJc_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Tim Cook">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Tim Cook</h3>
+                                                <p class="text-gray-500 text-md">CEO of Apple</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Diam quis enim lobortis scelerisque
+                                            fermentum dui faucibus in ornare. Donec pretium vulputate sapien nec sagittis
+                                            aliquam malesuada bibendum.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+
+
+                    <ul class="hidden space-y-8 sm:block">
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/paraga" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1375285353146327052/y6jeByyD_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Parag Agrawal">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Parag Agrawal</h3>
+                                                <p class="text-gray-500 text-md">CEO of Twitter</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Enim neque volutpat ac tincidunt vitae
+                                            semper. Mattis aliquam faucibus purus in massa tempor. Neque vitae tempus quam
+                                            pellentesque nec. Turpis cursus in hac habitasse platea dictumst.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/tim_cook" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1535420431766671360/Pwq-1eJc_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Tim Cook">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Tim Cook</h3>
+                                                <p class="text-gray-500 text-md">CEO of Apple</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Diam quis enim lobortis scelerisque
+                                            fermentum dui faucibus in ornare. Donec pretium vulputate sapien nec sagittis
+                                            aliquam malesuada bibendum.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/paraga" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1375285353146327052/y6jeByyD_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Parag Agrawal">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Parag Agrawal</h3>
+                                                <p class="text-gray-500 text-md">CEO of Twitter</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Enim neque volutpat ac tincidunt vitae
+                                            semper. Mattis aliquam faucibus purus in massa tempor. Neque vitae tempus quam
+                                            pellentesque nec. Turpis cursus in hac habitasse platea dictumst.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/tim_cook" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1535420431766671360/Pwq-1eJc_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Tim Cook">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Tim Cook</h3>
+                                                <p class="text-gray-500 text-md">CEO of Apple</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Diam quis enim lobortis scelerisque
+                                            fermentum dui faucibus in ornare. Donec pretium vulputate sapien nec sagittis
+                                            aliquam malesuada bibendum.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+
+
+                    <ul class="hidden space-y-8 lg:block">
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/satyanadella" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1221837516816306177/_Ld4un5A_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Satya Nadella">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Satya Nadella</h3>
+                                                <p class="text-gray-500 text-md">CEO of Microsoft</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Tortor dignissim convallis aenean et
+                                            tortor at. At ultrices mi tempus imperdiet nulla malesuada. Id cursus metus aliquam
+                                            eleifend mi. Quis ipsum suspendisse ultrices gravida dictum fusce ut.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/dan_schulman" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/516916920482672641/3jCeLgFb_400x400.jpeg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Dan Schulman">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Dan Schulman</h3>
+                                                <p class="text-gray-500 text-md">CEO of PayPal</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Quam pellentesque nec nam aliquam sem
+                                            et tortor consequat id. Enim sit amet venenatis urna cursus.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/satyanadella" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/1221837516816306177/_Ld4un5A_400x400.jpg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Satya Nadella">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Satya Nadella</h3>
+                                                <p class="text-gray-500 text-md">CEO of Microsoft</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Tortor dignissim convallis aenean et
+                                            tortor at. At ultrices mi tempus imperdiet nulla malesuada. Id cursus metus aliquam
+                                            eleifend mi. Quis ipsum suspendisse ultrices gravida dictum fusce ut.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="text-sm leading-6 bg-white dark:bg-black">
+                            <div class="relative group">
+                                <div
+                                    class="absolute transition rounded-lg opacity-25 -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 blur duration-400 group-hover:opacity-100 group-hover:duration-200">
+                                </div><a href="https://twitter.com/dan_schulman" class="cursor-pointer">
+                                    <div
+                                        class="relative p-6 space-y-6 leading-none rounded-lg bg-slate-800 ring-1 ring-gray-900/5">
+                                        <div class="flex items-center space-x-4"><img
+                                                src="https://pbs.twimg.com/profile_images/516916920482672641/3jCeLgFb_400x400.jpeg"
+                                                class="w-12 h-12 bg-center bg-cover border rounded-full" alt="Dan Schulman">
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Dan Schulman</h3>
+                                                <p class="text-gray-500 text-md">CEO of PayPal</p>
+                                            </div>
+                                        </div>
+                                        <p class="leading-normal text-gray-300 text-md">Quam pellentesque nec nam aliquam sem
+                                            et tortor consequat id. Enim sit amet venenatis urna cursus.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+
+
+                </div>
+            </div>
+        </section>
+        </div>
+        <!-- end comment -->
+        </div>
+      </main>
+      <!-- ===== Main Content End ===== -->
+    </div>
+    <!-- ===== Content Area End ===== -->
+  </div>
+  <!-- ===== Page Wrapper End ===== -->
+  <!-- ===== Preloader Start ===== -->
+<!--Footer container-->
+<footer
+  class="flex flex-col items-center bg-neutral-900 text-center text-white mt-4">
+  <div class="container px-6 pt-3">
+    <div class="mb-6 flex justify-center">
+      <a
+        href="#!"
+        type="button"
+        class="m-1 h-9 w-9 rounded-full border-2 border-black dark:border-white uppercase leading-normal text-black dark:text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
+        data-te-ripple-init
+        data-te-ripple-color="light">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mx-auto h-full w-4"
+          fill="currentColor"
+          viewBox="0 0 24 24">
+          <path
+            d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+        </svg>
+      </a>
+
+      <a
+        href="#!"
+        type="button"
+        class="m-1 h-9 w-9 rounded-full border-2 border-black dark:border-white uppercase leading-normal text-black dark:text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
+        data-te-ripple-init
+        data-te-ripple-color="light">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mx-auto h-full w-4"
+          fill="currentColor"
+          viewBox="0 0 24 24">
+          <path
+            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+        </svg>
+      </a>
+
+      <a
+        href="#!"
+        type="button"
+        class="m-1 h-9 w-9 rounded-full border-2 border-black dark:border-white uppercase leading-normal text-black dark:text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
+        data-te-ripple-init
+        data-te-ripple-color="light">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mx-auto h-full w-4"
+          fill="currentColor"
+          viewBox="0 0 24 24">
+          <path
+            d="M7 11v2.4h3.97c-.16 1.029-1.2 3.02-3.97 3.02-2.39 0-4.34-1.979-4.34-4.42 0-2.44 1.95-4.42 4.34-4.42 1.36 0 2.27.58 2.79 1.08l1.9-1.83c-1.22-1.14-2.8-1.83-4.69-1.83-3.87 0-7 3.13-7 7s3.13 7 7 7c4.04 0 6.721-2.84 6.721-6.84 0-.46-.051-.81-.111-1.16h-6.61zm0 0 17 2h-3v3h-2v-3h-3v-2h3v-3h2v3h3v2z"
+            fill-rule="evenodd"
+            clip-rule="evenodd" />
+        </svg>
+      </a>
+
+      <a
+        href="#!"
+        type="button"
+        class="m-1 h-9 w-9 rounded-full border-2 border-black dark:border-white uppercase leading-normal text-black dark:text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
+        data-te-ripple-init
+        data-te-ripple-color="light">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mx-auto h-full w-4"
+          fill="currentColor"
+          viewBox="0 0 24 24">
+          <path
+            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+        </svg>
+      </a>
+
+      <a
+        href="#!"
+        type="button"
+        class="m-1 h-9 w-9 rounded-full border-2 border-black dark:border-white uppercase leading-normal text-black dark:text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
+        data-te-ripple-init
+        data-te-ripple-color="light">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mx-auto h-full w-4"
+          fill="currentColor"
+          viewBox="0 0 24 24">
+          <path
+            d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
+        </svg>
+      </a>
+
+      <a
+        href="#!"
+        type="button"
+        class="m-1 h-9 w-9 rounded-full border-2 border-black dark:border-white uppercase leading-normal text-black dark:text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
+        data-te-ripple-init
+        data-te-ripple-color="light">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mx-auto h-full w-4"
+          fill="currentColor"
+          viewBox="0 0 24 24">
+          <path
+            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!--Copyright section-->
+  <div
+    class="w-full p-4 text-center text-black dark:text-white"
+    style="background-color: rgba(0, 0, 0, 0.2)">
+    © 2024 Copyright:
+    <a class="text-whitehite" href="https://alibaghban.ir/projects/mindgate"
+      >MindGate</a
+    >
+  </div>
+</footer>
+<!-- ===== Preloader End ===== -->
+<script defer src="{% static 'js/bundle.js' %}"></script></body>
+
+</html>

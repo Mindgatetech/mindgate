@@ -30,7 +30,7 @@ def token_generator(sender, instance, created, **kwargs):
         instance.secret = secret
         instance.save()
 
-@receiver(post_save, sender=Token)
+'''@receiver(post_save, sender=Token)
 def token_register(sender, instance, created, **kwargs):
     if not created:
         print('token_register passed...')
@@ -62,4 +62,4 @@ def token_unregister(sender, instance, **kwargs):
     topics = consumer.topics()
     if instance.secret in topics:
         print('deletion passed...')
-        kafka_admin_client.delete_topics(topics=[instance.secret, ])
+        kafka_admin_client.delete_topics(topics=[instance.secret, ])'''
